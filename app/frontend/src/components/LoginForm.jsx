@@ -15,7 +15,7 @@ export function LoginForm({ className, ...props }) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Login</CardTitle>
+          <CardTitle className="text-3xl font-bold">Login</CardTitle>
           <CardDescription className="font-semibold">
             Enter your SRM Mail Id and Password
           </CardDescription>
@@ -39,8 +39,8 @@ export function LoginForm({ className, ...props }) {
                 </div>
                 <Input id="password" placeholder="pass*ord" type="password" required />
               </div>
-              <Button type="submit" variant="outline" className="w-full ">
-                Login with Google
+              <Button type="submit" variant="outline" className="w-full font-semibold">
+                Login
               </Button>
             </div>
           </form>
