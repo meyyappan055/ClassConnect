@@ -23,6 +23,18 @@
     .rounded-5xl{
         border-radius: 1.5rem;
     }
+
+    .border-1{
+        border-width: 1px;
+    }
+
+    .w-104{
+        width: 26rem;
+    }
+
+    .border-1{
+        border-width: 1px;
+    }
 }
 
 @layer base {
