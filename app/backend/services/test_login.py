@@ -15,17 +15,17 @@ def login(playwright: Playwright):
     page = context.new_page()
 
     page.goto("https://academia.srmist.edu.in/#CIRCULAR")
-    page.wait_for_timeout(2000)
 
     try:
         iframe = page.frame(name="zohoiam")
+        iframe.get_by_label("Enter Email Address").wait_for(state="visible",timeout=5000)
         iframe.get_by_label("Enter Email Address").fill(USERNAME)
         iframe.get_by_role("button", name="Next").click()
-        page.wait_for_timeout(1000)
-
+        
+        iframe.get_by_placeholder("Enter Password").wait_for(state="visible")
         iframe.get_by_placeholder("Enter Password").fill(PASSWORD)
         iframe.get_by_role("button", name="Sign In").click()
-        page.wait_for_timeout(5000)
+        
 
         cookies = context.cookies() #using cookies as site is limiting login requests while testing
         with open(COOKIES_FILE, "w") as f:

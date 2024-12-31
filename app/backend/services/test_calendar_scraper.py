@@ -140,23 +140,26 @@ def test_load_session(playwright):
 
     page.goto("https://academia.srmist.edu.in/#WELCOME")
     print("Navigated to the Circular page after loading session.")
-    page.wait_for_timeout(3000)
+    
 
     try:
+        page.get_by_role("link", name="Academic Reports").wait_for(state="visible")
         page.get_by_role("link", name="Academic Reports").click()
         print("Clicked on 'Academic Reports'")
 
+
+        page.get_by_role("link", name="Academic Planner 2024 25 ODD").wait_for(state="visible")
         page.get_by_role("link", name="Academic Planner 2024 25 ODD").click()
         print("Clicked on 'Academic Planner 2024 25 ODD'")
-        page.wait_for_timeout(3000)  
+         
     
 
-        # june(page)
-        # july(page)
-        # august(page)
-        # september(page)
-        # october(page)
-        # november(page)
+        june(page)
+        july(page)
+        august(page)
+        september(page)
+        october(page)
+        november(page)
         december(page)
         
     except Exception as e:
