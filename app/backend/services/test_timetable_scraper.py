@@ -5,9 +5,6 @@ from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 
 
-app_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append(app_dir)
-
 from test_login import COOKIES_FILE, login
 
 
@@ -35,10 +32,10 @@ def check_login(page, playwright):
 def navigate_to_timetable(page):
     """Navigate to the timetable page after login."""
     page.get_by_role("link", name="").click()
-    page.get_by_role("link", name=" My Time Table & Attendance").click()
-    page.get_by_role("link", name=" My Time Table 2024-").click()
-
-
+    page.get_by_role("link", name="My Time Table & Attendance").click()
+    page.get_by_role("link", name="My Time Table 2024-").click()
+    
+    
 def scrape_table_data(page):
     """Scrape the timetable table data."""
     page.wait_for_selector("table.course_tbl", timeout=2000)

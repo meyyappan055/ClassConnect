@@ -143,10 +143,10 @@ def test_load_session(playwright):
     page.wait_for_timeout(3000)
 
     try:
-        page.get_by_role("link", name=" Academic Reports").click()
+        page.get_by_role("link", name="Academic Reports").click()
         print("Clicked on 'Academic Reports'")
 
-        page.get_by_role("link", name=" Academic Planner 2024 25 ODD").click()
+        page.get_by_role("link", name="Academic Planner 2024 25 ODD").click()
         print("Clicked on 'Academic Planner 2024 25 ODD'")
         page.wait_for_timeout(3000)  
     
