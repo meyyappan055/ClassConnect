@@ -1,10 +1,12 @@
 import sys
 import os
 
-app_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append(app_dir)
-print(sys.path)
-from test_login import login
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+sys.path.insert(0, project_root)
+
+from app.backend.core.utils import process_calendar_data
+
+from app.backend.services.test_login import login
 
 def june(page):
     june_data = []
@@ -16,7 +18,8 @@ def june(page):
 
         data = (date.text_content(), day.text_content(), day_order.text_content())
         june_data.append(data)
-    # print(june_data)
+
+    return june_data
     # print(type(june_data))
 
 
@@ -34,8 +37,7 @@ def july(page):
         data = (date.text_content(), day.text_content(), day_order.text_content())
         july_data.append(data)
 
-    # print(july_data)
-    # print(type(july_data))
+    return july_data
 
 
 def august(page):
@@ -53,8 +55,7 @@ def august(page):
         data = (date.text_content(), day.text_content(), day_order.text_content())
         august_data.append(data)
 
-    # print(august_data)
-    # print(type(august_data))
+    return august_data
 
 
 def september(page):
@@ -72,7 +73,7 @@ def september(page):
         data = (date.text_content(), day.text_content(), day_order.text_content())
         september_data.append(data)
 
-    # print(september_data)
+    return september_data
 
 
 def october(page):
@@ -90,7 +91,7 @@ def october(page):
         data = (date.text_content(), day.text_content(), day_order.text_content())
         october_data.append(data)
 
-    # print(october_data)
+    return october_data
 
 
 def november(page):
@@ -108,7 +109,7 @@ def november(page):
         data = (date.text_content(), day.text_content(), day_order.text_content())
         november_data.append(data)
 
-    # print(november_data)
+    return november_data
 
 
 def december(page):
@@ -126,8 +127,7 @@ def december(page):
         data = (date.text_content(), day.text_content(), day_order.text_content())
         december_data.append(data)
 
-    print(december_data)
-    print(type(december_data))
+    return december_data
 
 
 def test_load_session(playwright):
@@ -152,16 +152,9 @@ def test_load_session(playwright):
         page.get_by_role("link", name="Academic Planner 2024 25 ODD").click()
         print("Clicked on 'Academic Planner 2024 25 ODD'")
          
-    
+        day_name, day_order = process_calendar_data(page)
+        print(f"Day name: {day_name}, Day order: {day_order}")
 
-        june(page)
-        july(page)
-        august(page)
-        september(page)
-        october(page)
-        november(page)
-        december(page)
-        
     except Exception as e:
         print(f"Error during interaction: {e}")
     
