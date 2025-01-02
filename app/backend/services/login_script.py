@@ -20,6 +20,10 @@ def login(playwright: Playwright, email: str, password: str):
         iframe.get_by_placeholder("Enter Password").wait_for(state="visible")
         iframe.get_by_placeholder("Enter Password").fill(password)
         iframe.get_by_role("button", name="Sign In").click()
+
+        if not page.get_by_role("link", name="Academic Reports").wait_for(state="visible",timeout=2000):
+            print("Login Failed! Invalid credentials , try again.")
+            return False
         
         cookies = context.cookies()
         with open(COOKIES_FILE, "w") as f:
