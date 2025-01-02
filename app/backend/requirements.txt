@@ -3,3 +3,5 @@ uvicorn
 beautifulsoup4
 pytest-playwright
 python-dotenv
+datetime
+pydantic

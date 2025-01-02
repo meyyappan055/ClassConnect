@@ -9,19 +9,60 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import axios from "axios";
+
 
 export function LoginForm({ className, ...props }) {
+
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Starting login attempt...");
+      const url = "http://127.0.0.1:8000/api/login";
+      const formData = { email, password };
+
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true 
+      });
+
+      console.log("Server response:", response.data);
+
+      if (response.data.status === "success") {
+        console.log("Login successful!");
+      }
+    } catch (error) {
+      console.error("Full error object:", error);
+      
+      let errorMessage = "An error occurred during login";
+      if (error.response) {
+        errorMessage = error.response.data.detail || error.response.data;
+        console.error("Server error response:", error.response.data);
+      } else if (error.request) {
+        errorMessage = "No response received from server";
+      }
+      
+      console.error("Login failed:", errorMessage);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">Login</CardTitle>
+          <CardTitle className="text-3xl pb-1 font-semibold">Login</CardTitle>
           <CardDescription className="font-semibold">
             Enter your SRM Mail Id and Password
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -29,6 +70,8 @@ export function LoginForm({ className, ...props }) {
                   id="email"
                   type="email"
                   placeholder="xyz@srmist.edu.in"
+                  value = {email}
+                  onChange = {(e)=> setEmail(e.target.value) }
                   required
                 />
               </div>
@@ -37,7 +80,14 @@ export function LoginForm({ className, ...props }) {
                   <Label htmlFor="password">Password </Label>
                   
                 </div>
-                <Input id="password" placeholder="pass*ord" type="password" required />
+                <Input 
+                id="password" 
+                type="password" 
+                placeholder="pass*ord" 
+                value = {password}
+                onChange = {(e)=> setPassword(e.target.value) }
+                required 
+                />
               </div>
               <Button type="submit" variant="outline" className="w-full font-semibold">
                 Login
