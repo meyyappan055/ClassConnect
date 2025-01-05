@@ -5,7 +5,9 @@ from starlette.config import Config
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+env_path = os.path.join(project_root, ".env")
+load_dotenv(dotenv_path=env_path)
 
 router = APIRouter()
 
