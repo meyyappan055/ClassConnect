@@ -14,7 +14,7 @@ function App() {
           <Route path="/" element={<Mainpage />}/>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/calendarlogin" element={<CalendarLoginPage />} />
+          <Route path="/calendar/login" element={<CalendarLoginPage />} />
         </Routes>
     </BrowserRouter>
   )

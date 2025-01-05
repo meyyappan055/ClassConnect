@@ -1,6 +1,26 @@
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+
 
 export function GoogleSignIn() {
+
+  const handleLogin = () => {
+    try{
+      const response = axios.get("http://127.0.0.1:8000/auth/login",{
+        withCredentials: true
+      });
+      
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        window.location.href = response.request.responseURL;
+      }
+    }
+    catch (error) {
+      console.error("error during login :", error);
+    }
+  }
+
   return (
     <div className="flex flex-col items-center">
 
@@ -8,7 +28,11 @@ export function GoogleSignIn() {
         Data scraped successfully from Academia! <br></br> Sign in to effortlessly schedule it into your calendar.
       </div>
 
-      <Button variant="outline" className="rounded-xl mt-12 p-7 font-inter text-xl ">
+      <Button 
+      variant="outline" 
+      className="rounded-xl mt-12 p-7 font-inter text-xl "
+      onClick={handleLogin}
+      >
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-6 w-6 mr-2">
           <path
