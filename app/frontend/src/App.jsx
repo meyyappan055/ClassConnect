@@ -9,6 +9,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <div className="min-h-screen bg-background">
         <Navbar />
         <Routes>
           <Route path="/" element={<Mainpage />}/>
@@ -16,6 +17,7 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/calendar/login" element={<CalendarLoginPage />} />
         </Routes>
+      </div>
     </BrowserRouter>
   )
 }
