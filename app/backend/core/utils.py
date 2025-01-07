@@ -1,5 +1,6 @@
 from datetime import date
-from app.backend.services.test_calendar_scraper import june,july,august,september,october,november,december
+from app.backend.services.test_odd_calendar_scraper import june,july,august,september,october,november,december
+from app.backend.services.test_even_calendar_scraper import january,february,march,april,may
 
 def get_current_date():
     current_date = str(date.today()) # 2025-01-01
@@ -18,6 +19,21 @@ def get_current_date():
 
 def process_calendar_data(page):
         year,month,day = get_current_date()
+
+        if month ==1:
+            month_data = january(page)
+        
+        if month == 2:
+            month_data = february(page)
+        
+        if month == 3:
+            month_data = march(page)
+        
+        if month == 4:
+            month_data = april(page)
+        
+        if month == 5:
+            month_data = may(page)
         
         if month == 6:
             month_data = june(page)
