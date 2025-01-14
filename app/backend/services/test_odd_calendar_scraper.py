@@ -35,7 +35,7 @@ def july(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(7)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(9)").first
 
-        if date and day and day_order:  
+        if (date and day and day_order) or (date_row1 and day_row1 and day_order_row1):  
                 data = {
                     "date": date.text_content().strip(),
                     "day": day.text_content().strip(),
@@ -58,7 +58,7 @@ def august(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(12)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(14)").first
 
-        if date and day and day_order:  
+        if (date and day and day_order) or (date_row1 and day_row1 and day_order_row1): 
                 data = {
                     "date": date.text_content().strip(),
                     "day": day.text_content().strip(),
@@ -81,7 +81,7 @@ def september(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(17)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(19)").first
 
-        if date and day and day_order:  
+        if (date and day and day_order) or (date_row1 and day_row1 and day_order_row1): 
                 data = {
                     "date": date.text_content().strip(),
                     "day": day.text_content().strip(),
@@ -104,7 +104,7 @@ def october(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(22)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(24)").first
 
-        if date and day and day_order:  
+        if (date and day and day_order) or (date_row1 and day_row1 and day_order_row1):  
                 data = {
                     "date": date.text_content().strip(),
                     "day": day.text_content().strip(),
@@ -127,7 +127,7 @@ def november(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(27)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(29)").first
 
-        if date and day and day_order:  
+        if (date and day and day_order) or (date_row1 and day_row1 and day_order_row1): 
                 data = {
                     "date": date.text_content().strip(),
                     "day": day.text_content().strip(),
@@ -150,7 +150,7 @@ def december(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(32)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(34)").first
 
-        if date and day and day_order:  
+        if (date and day and day_order) or (date_row1 and day_row1 and day_order_row1):  
                 data = {
                     "date": date.text_content().strip(),
                     "day": day.text_content().strip(),
