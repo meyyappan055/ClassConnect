@@ -16,8 +16,14 @@ def january(page):
         day = page.locator(f"tr:nth-child({i+1}) > td:nth-child(2)").first
         day_order = page.locator(f"tr:nth-child({i+1}) > td:nth-child(4)").first
 
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        january_data.append(data)
+
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                january_data.append(data)
 
     return january_data
 
@@ -30,8 +36,14 @@ def february(page):
         day = page.locator(f"tr:nth-child({i+1}) > td:nth-child(2)").first
         day_order = page.locator(f"tr:nth-child({i+1}) > td:nth-child(4)").first
 
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        february_data.append(data)
+
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                february_data.append(data)
 
     return february_data
 
@@ -43,9 +55,14 @@ def march(page):
         date = page.locator(f"tr:nth-child({i+1}) > td").first
         day = page.locator(f"tr:nth-child({i+1}) > td:nth-child(2)").first
         day_order = page.locator(f"tr:nth-child({i+1}) > td:nth-child(4)").first
-
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        march_data.append(data)
+        
+        if date and day and day_order:  
+            data = {
+                "date": date.text_content().strip(),
+                "day": day.text_content().strip(),
+                "day_order": day_order.text_content().strip()
+            }
+            march_data.append(data)
 
     return march_data
 
@@ -57,9 +74,14 @@ def april(page):
         date = page.locator(f"tr:nth-child({i+1}) > td").first
         day = page.locator(f"tr:nth-child({i+1}) > td:nth-child(2)").first
         day_order = page.locator(f"tr:nth-child({i+1}) > td:nth-child(4)").first
-
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        april_data.append(data)
+        
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                april_data.append(data)
 
     return april_data
 
@@ -71,9 +93,14 @@ def may(page):
         date = page.locator(f"tr:nth-child({i+1}) > td").first
         day = page.locator(f"tr:nth-child({i+1}) > td:nth-child(2)").first
         day_order = page.locator(f"tr:nth-child({i+1}) > td:nth-child(4)").first
-
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        may_data.append(data)
+        
+        if date and day and day_order:  
+            data = {
+                "date": date.text_content().strip(),
+                "day": day.text_content().strip(),
+                "day_order": day_order.text_content().strip()
+            }
+            may_data.append(data)
 
     return may_data
 
@@ -81,7 +108,7 @@ def may(page):
 def test_load_session(playwright):
     from app.backend.core.utils import process_calendar_data
 
-    page , context, browser = login(playwright)
+    page , context, browser = login.login(playwright)
 
     if page is None or context is None or browser is None:
         print("Login failed...Please check your credentials and try again.")

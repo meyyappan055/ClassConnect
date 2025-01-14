@@ -9,18 +9,20 @@ from app.backend.api.v1.routes.login import login
 
 def june(page):
     june_data = []
-
     for i in range(1,31):
         date = page.locator(f"tr:nth-child({i+1}) > td").first
         day = page.locator(f"tr:nth-child({i+1}) > td:nth-child(2)").first
         day_order = page.locator(f"tr:nth-child({i+1}) > td:nth-child(4)").first
-
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        june_data.append(data)
+        
+        if date and day and day_order:  
+            data = {
+                "date": date.text_content().strip(),
+                "day": day.text_content().strip(),
+                "day_order": day_order.text_content().strip()
+            }
+            june_data.append(data)
 
     return june_data
-    # print(type(june_data))
-
 
 def july(page):
     july_data = []
@@ -33,8 +35,13 @@ def july(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(7)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(9)").first
 
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        july_data.append(data)
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                july_data.append(data)
 
     return july_data
 
@@ -51,8 +58,13 @@ def august(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(12)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(14)").first
 
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        august_data.append(data)
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                august_data.append(data)
 
     return august_data
 
@@ -69,8 +81,13 @@ def september(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(17)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(19)").first
 
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        september_data.append(data)
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                september_data.append(data)
 
     return september_data
 
@@ -87,8 +104,13 @@ def october(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(22)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(24)").first
 
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        october_data.append(data)
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                october_data.append(data)
 
     return october_data
 
@@ -105,8 +127,13 @@ def november(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(27)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(29)").first
 
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        november_data.append(data)
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                november_data.append(data)
 
     return november_data
 
@@ -123,8 +150,13 @@ def december(page):
         day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(32)").first
         day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(34)").first
 
-        data = (date.text_content(), day.text_content(), day_order.text_content())
-        december_data.append(data)
+        if date and day and day_order:  
+                data = {
+                    "date": date.text_content().strip(),
+                    "day": day.text_content().strip(),
+                    "day_order": day_order.text_content().strip()
+                }
+                december_data.append(data)
 
     return december_data
 
