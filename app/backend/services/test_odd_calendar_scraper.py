@@ -1,11 +1,6 @@
 import sys
 import os
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
-sys.path.insert(0, project_root)
-
-
-from app.backend.api.v1.routes.login import login
 
 def june(page):
     june_data = []
@@ -160,39 +155,3 @@ def december(page):
 
     return december_data
 
-
-def test_load_session(playwright):
-    from app.backend.core.utils import process_calendar_data
-
-    page , context, browser = login(playwright)
-
-    if page is None or context is None or browser is None:
-        print("Login failed...Please check your credentials and try again.")
-        return
-
-    page.goto("https://academia.srmist.edu.in/#WELCOME")
-    print("Navigated to the Circular page after loading session.")
-    
-
-    try:
-        page.get_by_role("link", name="Academic Reports").wait_for(state="visible")
-        page.get_by_role("link", name="Academic Reports").click()
-        print("Clicked on 'Academic Reports'")
-
-
-        page.get_by_role("link", name="Academic Planner 2024 25 ODD").wait_for(state="visible")
-        page.get_by_role("link", name="Academic Planner 2024 25 ODD").click()
-        print("Clicked on 'Academic Planner 2024 25 ODD'")
-         
-        day_name, day_order = process_calendar_data(page)
-        print(f"Day name: {day_name}, Day order: {day_order}")
-
-    except Exception as e:
-        print(f"Error during interaction: {e}")
-    
-    browser.close()
-
-if __name__ == "__main__":
-    from playwright.sync_api import sync_playwright
-    with sync_playwright() as playwright:
-        test_load_session(playwright)
