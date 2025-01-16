@@ -8,9 +8,9 @@ import time
 
 
 def navigate_batch1(page):
-    page.get_by_role("link", name=" Unified Time Table").click()
-    page.get_by_role("link", name=" Unified Time Table 2024-Batch").click()
-    # time.sleep(3)
+    page.get_by_role("link", name="Unified Time Table").click()
+    page.get_by_role("link", name="Unified Time Table 2024-Batch").click()
+    time.sleep(3)
 
 
 def navigate_batch2(page):

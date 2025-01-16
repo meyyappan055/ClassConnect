@@ -4,7 +4,7 @@ import json
 from bs4 import BeautifulSoup
 from test_odd_calendar_scraper import june,july,august,september,october,november,december, navigate_odd_calendar
 from test_even_calendar_scraper import january,february,march,april,may , navigate_even_calendar
-from test_timetable_scraper import navigate_to_timetable,scrape_table_data
+from test_timetable_scraper import navigate_to_timetable,scrape_table_data , get_batch_number
 from test_unified_timetable import navigate_batch1,navigate_batch2,scrape_batch1_data,scrape_batch2_data
 
 
@@ -28,22 +28,29 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         page.get_by_role("link", name="Academic Reports").click()
         print("Clicked on 'Academic Reports'")
         
-        navigate_odd_calendar(page)
+        # navigate_odd_calendar(page)
         navigate_even_calendar(page)
+        jan_data = january(page) # as of now
         
         page.get_by_role("link", name="Academic Reports").click()
 
         navigate_to_timetable(page)
         timetable_data = scrape_table_data(page)
-        jan_data = january(page) # as of now
 
-        navigate_batch1(page)
-        batch1_data = scrape_batch1_data
+        batch_number = get_batch_number(page)
 
-        navigate_batch2(page)
-        batch2_data = scrape_batch2_data
 
-        scraped_data = [timetable_data,jan_data,batch1_data,batch2_data]
+        if batch_number == 1:
+            navigate_batch1(page)
+            batch_data = scrape_batch1_data(page)
+        elif batch_number == 2: 
+            navigate_batch2(page)
+            batch_data = scrape_batch2_data(page)
+        else:
+            batch_data = ["error in fetching batch data"]
+
+
+        scraped_data = [timetable_data,jan_data,batch_data]
         
         print("SUCCESS") 
         print(json.dumps(scraped_data))  

@@ -28,3 +28,22 @@ def scrape_table_data(page):
         data.append(content)
 
     return data
+
+
+def get_batch_number(page):
+    page_html = page.content()
+    soup = BeautifulSoup(page_html, "html.parser")
+    table = soup.find("table", {"align": "left"})
+    rows = table.find_all("tr")
+
+    batch_data = []
+    for row in rows:
+        columns = row.find_all("td")
+        column_data = [column.text.strip() for column in columns]
+        col1 = column_data[1]
+        batch_data.append(col1)
+    
+    batch_number  = int(batch_data[1])  
+    
+    return batch_number # -> 1 or 2
+        
