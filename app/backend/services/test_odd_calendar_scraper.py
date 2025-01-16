@@ -2,6 +2,11 @@ import sys
 import os
 
 
+def navigate_odd_calendar(page):
+    page.get_by_role("link", name="Academic Planner 2024 25 ODD").wait_for(state="visible")
+    page.get_by_role("link", name="Academic Planner 2024 25 ODD").click()
+    print("Clicked on 'Academic Planner 2024 25 ODD'")
+
 def june(page):
     june_data = []
     for i in range(1,31):

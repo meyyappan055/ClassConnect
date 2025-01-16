@@ -2,6 +2,11 @@ import sys
 import os
 
 
+def navigate_even_calendar(page):
+    page.get_by_role("link", name="Academic Planner 2024-25-EVEN").wait_for(state="visible")
+    page.get_by_role("link", name="Academic Planner 2024-25-EVEN").click()
+    print("Clicked on 'Academic Planner 2024 25 EVEN'")
+
 def january(page):
     january_data = []
 
