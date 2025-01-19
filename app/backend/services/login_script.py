@@ -35,7 +35,7 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
 
         navigate_even_calendar(page)
         day_name, day_order = process_calendar_data(page)
- 
+
         if day_order != "-":
             day_order = int(day_order) # 1 or 2..
 
@@ -56,15 +56,37 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         
         current_day_order_data = batch_data[day_order+2] # 3rd row DO starts , current_day_order_data -> ["day 1","A","C"...]
 
-        for i in range(1,len(timetable_data)): # first row is heading
-            slot_data = timetable_data[i]
-            for j in range(len(current_day_order_data)):
-                if slot_data[1] == current_day_order_data[j]:
-                    current_day_order_data[j] = slot_data[1]
+        def map_slots_to_courses(timetable_data, current_day_order_data, batch_data):
+            slot_to_details = {}
+            for row in timetable_data[1:]:  
+                course_title = row[0]
+                slot = row[1]
+                room_no = row[2]
+                slot_to_details[slot] = {
+                    "course": course_title,
+                    "room": room_no
+                }
 
-        
-        scraped_data = [current_day_order_data] # -> ["day 1","Math","AI"...]
-        
+            time_slots = batch_data[0][1:]  
+            course_details = []
+
+            for i in range(1, len(current_day_order_data)):
+                slot = current_day_order_data[i]
+                
+                main_slot = slot.split('/')[0].strip() # Handle slots with X (like 'A / X')
+               
+                if main_slot in slot_to_details:
+                    course_info = [
+                        slot_to_details[main_slot]["course"],    
+                        time_slots[i-1],                         
+                        slot_to_details[main_slot]["room"]  
+                    ]
+                    course_details.append(course_info)
+            
+            return course_details
+
+        scraped_data = map_slots_to_courses(timetable_data, current_day_order_data,batch_data)
+
         print("SUCCESS") 
         print(json.dumps(scraped_data))  
         return True

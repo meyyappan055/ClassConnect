@@ -41,13 +41,13 @@ async def login(login_data: LoginData):
                 
                 output_lines = result.stdout.strip().split('\n')
                 data_line = output_lines[output_lines.index("SUCCESS") + 1]
-                june_data = json.loads(data_line)
+                json_data = json.loads(data_line)
                 
                 return {
                     "status": "success",
                     "message": "Login successful",
                     # fetched data
-                    "data": june_data
+                    "data": json_data
                 }
             except Exception as e:
                 print(f"Data parsing error: {e}")
