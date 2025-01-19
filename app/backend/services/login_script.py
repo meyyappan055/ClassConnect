@@ -74,12 +74,17 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
                 slot = current_day_order_data[i]
                 
                 main_slot = slot.split('/')[0].strip() # Handle slots with X (like 'A / X')
-               
+
                 if main_slot in slot_to_details:
+                    updated_time_slot = time_slots[i-1].replace('\t', '') # /t in between
+                    start_time = updated_time_slot.split('-')[0].strip()
+                    end_time = updated_time_slot.split('-')[1].strip()
+
                     course_info = [
-                        slot_to_details[main_slot]["course"],    
-                        time_slots[i-1],                         
-                        slot_to_details[main_slot]["room"]  
+                        slot_to_details[main_slot]["course"],
+                        start_time,
+                        end_time,                       
+                        slot_to_details[main_slot]["room"]
                     ]
                     course_details.append(course_info)
             
