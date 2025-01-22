@@ -1,26 +1,7 @@
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
+import axios from "axios";
 
 export function GoogleSignIn() {
-  const navigate = useNavigate();
 
-  const handleSuccess = async (credentialResponse) => {
-    try {
-      console.log('Login Success - Full Response:', credentialResponse);
-      navigate('/'); // as of now
-    } catch (error) {
-      console.error('Login error:', error);
-    }
-  };
-
-  if (!GOOGLE_CLIENT_ID) {
-    console.error('Missing Google Client ID');
-    return <div className="text-red-500">Configuration Error: Missing Google Client ID</div>;
-  }
 
   return (
     <div className="flex flex-col items-center">
@@ -29,25 +10,11 @@ export function GoogleSignIn() {
         Sign in to effortlessly schedule it into your calendar.
       </div>
 
-      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <GoogleLogin
-          onSuccess={handleSuccess}
-          onError={(error) => console.error('Login Failed:', error)}
-          useOneTap={false}
-          flow="implicit"
-          auto_select={false}
-          type="standard"
-          theme="outline"
-          size="large"
-          text="signin_with"
-          shape="rectangular"
-          width="200"
-          locale="en"
-          context="signin"
-          ux_mode="popup"
-          // hosted_domain="srmist.edu.in"
-        />
-      </GoogleOAuthProvider>
+      <button
+        className="px-6 text-white rounded-xl font-medium border-white border-1 p-2"
+      >
+        Sign in with Google
+      </button>
     </div>
   );
 }

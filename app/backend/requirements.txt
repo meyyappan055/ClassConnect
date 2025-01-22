@@ -5,5 +5,4 @@ pytest-playwright
 python-dotenv
 datetime
 pydantic
-authlib 
-aiohttp
+ics
