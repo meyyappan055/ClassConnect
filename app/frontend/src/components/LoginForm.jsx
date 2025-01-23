@@ -17,7 +17,9 @@ export function LoginForm({ className, ...props }) {
 
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [fileUrl, setFileUrl] = useState(null);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -33,6 +35,22 @@ export function LoginForm({ className, ...props }) {
       });
 
       console.log("Server response:", response.data);
+      setIsLoggedIn(true); 
+      const data = response.data;
+
+      const generateIcalUrl = "http://127.0.0.1:8000/api/generate-ical";
+
+      const postResponse = await axios.post(generateIcalUrl, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        responseType: "blob",
+      });
+      console.log("iCal file generated successfully");
+
+      const blob = new Blob([postResponse.data], { type: "text/calendar" });
+      const download_url = URL.createObjectURL(blob);
+      setFileUrl(download_url);
 
       if (response.data.status === "success") {
         console.log("Login successful!");
@@ -51,6 +69,15 @@ export function LoginForm({ className, ...props }) {
       console.error("Login failed:", errorMessage);
     }
   };
+
+    const handleDownload = () => {
+      if (fileUrl){
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "classes.ics"; 
+      link.click();
+      }
+    }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -96,6 +123,22 @@ export function LoginForm({ className, ...props }) {
           </form>
         </CardContent>
       </Card>
+
+      {fileUrl && (
+        <div className="flex flex-col items-center mt-4">
+        <div className="text-3xl pb-1 font-semibold text-center">
+          Your file is ready!
+        </div>
+        <Button
+          variant="outline"
+          onClick={handleDownload}
+          className="mt-4 w-full max-w-xs font-semibold"
+        >
+          Download
+        </Button>
+        </div>
+      )}
+
     </div>
   );
 }
