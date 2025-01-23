@@ -18,7 +18,9 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
     page = context.new_page()
     
     try:
+        print("trying to go to academia")
         page.goto("https://academia.srmist.edu.in/#CIRCULAR")
+        page.wait_for_load_state("domcontentloaded")
         iframe = page.frame(name="zohoiam")
     
         iframe.get_by_label("Enter Email Address").wait_for(state="visible")

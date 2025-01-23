@@ -20,9 +20,8 @@ def navigate_batch2(page):
 
 
 def scrape_batch1_data(page):
-    page.reload()
     page.wait_for_load_state('domcontentloaded')
-    page.wait_for_selector("table", timeout=4000)
+    page.wait_for_selector("table", timeout=6000)
     page_html = page.content()
     soup = BeautifulSoup(page_html, "html.parser")
     table = soup.find("table", {"align": "center"})
