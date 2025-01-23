@@ -19,7 +19,7 @@ def get_current_date():
 
 def process_calendar_data(page):
     year, month, day = get_current_date()
-    print(f"Year: {year}, Month: {month}, Day: {day}")
+    # print(f"Year: {year}, Month: {month}, Day: {day}")
     
     # For testing purposes
     month = 1

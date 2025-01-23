@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException , Request
+from fastapi.responses import StreamingResponse
+from io import BytesIO
 from datetime import date
 from typing import List
 
@@ -13,17 +15,22 @@ def get_current_date():
 
 
 @router.post("/generate-ical")
-async def generate_ical(classes: List[dict]):
+async def generate_ical(request:Request):
+    body = await request.json()
+    print("Received data:", body)
+
+    try:
+        classes = body.get("data")  
+    except Exception as e:
+        raise HTTPException(status_code=422, detail="Invalid input format: " + str(e))
+
     year, month, day = get_current_date()
     
     def create_ics_file(events):
         ics_content = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Class Connect//NONSGML v1.0//EN\n"
         
         for i, event in enumerate(events):
-            title = event["title"]
-            start_time = event["start_time"]
-            end_time = event["end_time"]
-            location = event["location"]
+            title, start_time, end_time, location = event
             
             start_hour, start_mins = start_time.split(":")
             end_hour, end_mins = end_time.split(":")
@@ -62,14 +69,17 @@ END:VEVENT
             ics_content += event_content
         
         ics_content += "END:VCALENDAR"
-
-        with open("classes.ics", "w", encoding="utf-8") as file:
-            file.write(ics_content)
-        return "classes.ics"
+        return ics_content
     
 
     try:
-        file_path = create_ics_file(classes)
-        return {"message": "iCal file generated successfully", "file_path": file_path}
+        ics_content = create_ics_file(classes)
+        file_stream = BytesIO(ics_content.encode("utf-8"))
+        return StreamingResponse(
+            file_stream,
+            media_type="text/calendar",
+            headers={"Content-Disposition": "attachment; filename=classes.ics"},
+        )
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
