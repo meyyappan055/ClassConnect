@@ -27,7 +27,7 @@ export function LoginForm({ className, ...props }) {
     e.preventDefault();
     try {
       console.log("Starting login attempt...");
-      const url = "http://127.0.0.1:8000/api/login";
+      const url = "https://class-connect-a970.onrender.com/api/login";
       const formData = { email, password };
 
       const response = await axios.post(url, formData, {
@@ -41,7 +41,7 @@ export function LoginForm({ className, ...props }) {
       setIsLoggedIn(true); 
       const data = response.data;
 
-      const generateIcalUrl = "http://127.0.0.1:8000/api/generate-ical";
+      const generateIcalUrl = "https://class-connect-a970.onrender.com/api/generate-ical";
 
       const postResponse = await axios.post(generateIcalUrl, data, {
         headers: {
