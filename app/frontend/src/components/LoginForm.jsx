@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import axios from "axios";
+import DownloadPage from "@/pages/DownloadPage";
+import { useNavigate } from "react-router-dom";
 
 
 export function LoginForm({ className, ...props }) {
@@ -19,6 +21,7 @@ export function LoginForm({ className, ...props }) {
   const [password,setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
+  const navigate = useNavigate();
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,6 +55,8 @@ export function LoginForm({ className, ...props }) {
       const download_url = URL.createObjectURL(blob);
       setFileUrl(download_url);
 
+      navigate("/download", { state: { fileUrl: download_url } });
+
       if (response.data.status === "success") {
         console.log("Login successful!");
       }
@@ -70,14 +75,6 @@ export function LoginForm({ className, ...props }) {
     }
   };
 
-    const handleDownload = () => {
-      if (fileUrl){
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = "classes.ics"; 
-      link.click();
-      }
-    }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -124,21 +121,7 @@ export function LoginForm({ className, ...props }) {
         </CardContent>
       </Card>
 
-      {fileUrl && (
-        <div className="flex flex-col items-center mt-4">
-        <div className="text-3xl pb-1 font-semibold text-center">
-          Your file is ready!
-        </div>
-        <Button
-          variant="outline"
-          onClick={handleDownload}
-          className="mt-4 w-full max-w-xs font-semibold"
-        >
-          Download
-        </Button>
-        </div>
-      )}
-
+      
     </div>
   );
 }

@@ -13,7 +13,7 @@ from utils import process_calendar_data
 
 
 def login_and_scrape(playwright: Playwright, email: str, password: str):
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=True)
     context = browser.new_context()
     page = context.new_page()
     
