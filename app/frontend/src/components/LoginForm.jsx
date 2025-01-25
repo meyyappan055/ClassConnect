@@ -13,6 +13,9 @@ import { useState } from "react";
 import axios from "axios";
 import DownloadPage from "@/pages/DownloadPage";
 import { useNavigate } from "react-router-dom";
+import { Eye } from 'lucide-react';
+import { EyeOff } from 'lucide-react';
+import { Lock } from 'lucide-react';  
 
 
 export function LoginForm({ className, ...props }) {
@@ -21,7 +24,12 @@ export function LoginForm({ className, ...props }) {
   const [password,setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,9 +88,9 @@ export function LoginForm({ className, ...props }) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl pb-1 font-semibold">Login</CardTitle>
+          <CardTitle className="text-3xl pb-2 font-semibold">Login</CardTitle>
           <CardDescription className="font-semibold">
-            Enter your SRM Mail Id and Password
+            Enter your SRM Mail ID and Password
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -104,16 +112,26 @@ export function LoginForm({ className, ...props }) {
                   <Label htmlFor="password">Password </Label>
                   
                 </div>
-                <Input 
-                id="password" 
-                type="password" 
-                placeholder="pass*ord" 
-                value = {password}
-                onChange = {(e)=> setPassword(e.target.value) }
-                required 
-                />
+                <div className="flex flex-row">
+                  <Input 
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="pass*ord" 
+                  value = {password}
+                  onChange = {(e)=> setPassword(e.target.value) }
+                  required 
+
+                  />
+                  <button 
+                  className="absolute ml-76 mt-2"
+                  onClick = {togglePasswordVisibility}
+                  >
+                    {showPassword ? <EyeOff size={20}/> : <Eye size={20} />}
+                  </button>
+
+                </div>
               </div>
-              <Button type="submit" variant="outline" className="w-full font-semibold">
+              <Button type="submit" variant="outline" className="w-full font-medium text-base">
                 Login
               </Button>
             </div>
@@ -121,7 +139,14 @@ export function LoginForm({ className, ...props }) {
         </CardContent>
       </Card>
 
-      
+        <div className="font-inter text-base font-medium   text-center mt-3 flex ml-5">
+         <div>
+          <Lock className="mt-0.5" size={18} />
+         </div>
+         <div className="ml-2">
+           We respect your privacy – no data saved.
+         </div>
+          </div>
     </div>
   );
 }

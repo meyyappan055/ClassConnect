@@ -35,6 +35,10 @@
     .border-1{
         border-width: 1px;
     }
+
+    .ml-76 {
+        margin-left: 19rem 
+    }
 }
 
 @layer base {

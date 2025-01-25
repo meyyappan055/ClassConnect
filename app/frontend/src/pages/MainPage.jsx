@@ -21,8 +21,8 @@ const MainPage = () => {
 
         <div className='flex justify-center mt-10 '>
           <Button variant="outline" className="font-semibold rounded-xl text-base p-5">
-            <CircleChevronRight className="mr-1 h-5 w-5" />
             <Link to="/login">Try it out</Link>
+            <CircleChevronRight className="mr-1 h-5 w-5" />
           </Button>
         </div>
 
