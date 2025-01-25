@@ -1,4 +1,11 @@
 import React from 'react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
 
 const About = () => {
   return (
@@ -22,8 +29,63 @@ const About = () => {
         Who needs to sit and manually add classes when you can just download a ready-made .ical file? ClassConnect turns your timetable into an instant calendar upload, saving you time and effort so you can focus on what really matters.
       </div>
 
+      <div className='mb-20'>
+        <div className='font-inter font-semibold text-3xl text-center mt-20 '>
+          FAQs
+        </div>
+          <div className='mx-40 mt-10 '>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>How do I add it to Calendar?</AccordionTrigger>
+              <AccordionContent>
+              On successful login, you will be redirected to the download page. Once your timetable is scraped and converted into an iCal file, you can download it and click on the file downloaded and select add all option to add all your classes to your calendar.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>What platforms does ClassConnect support?</AccordionTrigger>
+              <AccordionContent>
+              This .ics file format is widely supported across many calendar applications like Google Calendar, Apple Calendar and more. 
+              </AccordionContent>
+          </AccordionItem>
+          </Accordion>
+
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Can I trust ClassConnect with my data?</AccordionTrigger>
+              <AccordionContent>
+              Absolutely! Your data is used only for logging in to Academia for scraping your classes and is never stored anywhere. 
+              </AccordionContent>
+          </AccordionItem>
+          </Accordion>
+
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>What to do if I have an issue with ClassConnect?</AccordionTrigger>
+              <AccordionContent>
+              Please do contact me through mail : meyyappan055@gmail.com or through whatsapp : +91 8903042799
+              </AccordionContent>
+          </AccordionItem>
+          </Accordion>
+
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>How does ClassConnect handle holidays or breaks?</AccordionTrigger>
+              <AccordionContent>
+                ClassConnect will automatically account for holidays or breaks if they are included in Academia's Calendar, ensuring your calendar stays accurate.
+              </AccordionContent>
+          </AccordionItem>
+          </Accordion>
+
+          </div>
+      </div>
+
     </div>
   )
 }
 
+
 export default About
+
