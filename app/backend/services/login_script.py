@@ -19,8 +19,7 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
     
     try:
         print("trying to go to academia")
-        page.goto("https://academia.srmist.edu.in/#CIRCULAR")
-        page.wait_for_load_state("domcontentloaded")
+        page.goto("https://academia.srmist.edu.in/#CIRCULAR").wait_for_load_state("domcontentloaded")
         iframe = page.frame(name="zohoiam")
     
         iframe.get_by_label("Enter Email Address").wait_for(state="visible")
@@ -93,6 +92,12 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
             return course_details
 
         scraped_data = map_slots_to_courses(timetable_data, current_day_order_data,batch_data)
+
+
+        span_selector = ".zc-header .navbar_user_name"
+        page.locator(span_selector).click()
+        page.locator("#portalLogout").click()
+
 
         print("SUCCESS") 
         print(json.dumps(scraped_data))  
