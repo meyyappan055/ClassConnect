@@ -1,7 +1,7 @@
 import React from 'react'
 import { LogIn } from 'lucide-react';
 import { House } from 'lucide-react';
-import { Bug } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { CalendarClock } from 'lucide-react';
 import {Link} from 'react-router-dom';
 
@@ -27,9 +27,9 @@ const Navbar = () => {
                 </button>
             </Link>
 
-            <Link to="/contact">
+            <Link to="/about">
                 <button>
-                    {<Bug className="mr-4 h-5 w-5 hover:bg-white/10" />}
+                    {<Info className="mr-4 h-5 w-5 hover:bg-white/10" />}
                 </button>
             </Link>
         </div>

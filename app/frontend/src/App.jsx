@@ -1,6 +1,6 @@
 import LoginPage from "./pages/LoginPage"
 import Mainpage from "./pages/Mainpage"
-import ContactPage from "./pages/ContactPage"
+import About from "./pages/About"
 import DownloadPage from "./pages/DownloadPage"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Mainpage />}/>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/about" element= {<About />} />
           <Route path="/download" element = {<DownloadPage />} />
         </Routes>
       </div>

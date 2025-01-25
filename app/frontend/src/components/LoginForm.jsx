@@ -88,7 +88,7 @@ export function LoginForm({ className, ...props }) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl pb-2 font-semibold">Login</CardTitle>
+          <CardTitle className="text-3xl pb-1 font-inter font-medium">Login</CardTitle>
           <CardDescription className="font-semibold">
             Enter your SRM Mail ID and Password
           </CardDescription>
@@ -139,12 +139,12 @@ export function LoginForm({ className, ...props }) {
         </CardContent>
       </Card>
 
-        <div className="font-inter text-base font-medium   text-center mt-3 flex ml-5">
+        <div className="font-inter text-base font-medium   text-center mt-1 flex ml-12">
          <div>
-          <Lock className="mt-0.5" size={18} />
+          <Lock className="mt-0.5" size={18} color="#8b9388"/>
          </div>
-         <div className="ml-2">
-           We respect your privacy – no data saved.
+         <div className="ml-2 font-robotoCondensed text-slate-300">
+           We respect your privacy – no data stored.
          </div>
           </div>
     </div>
