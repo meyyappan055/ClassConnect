@@ -1,5 +1,5 @@
 import LoginPage from "./pages/LoginPage"
-import Mainpage from "./pages/Mainpage"
+import MainPage from "./pages/MainPage"
 import About from "./pages/About"
 import DownloadPage from "./pages/DownloadPage"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
@@ -12,7 +12,7 @@ function App() {
       <div className="min-h-screen bg-background">
         <Navbar />
         <Routes>
-          <Route path="/" element={<Mainpage />}/>
+          <Route path="/" element={<MainPage />}/>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/about" element= {<About />} />
           <Route path="/download" element = {<DownloadPage />} />
