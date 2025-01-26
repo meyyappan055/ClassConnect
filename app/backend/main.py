@@ -6,7 +6,9 @@ app = FastAPI()
 
 origins = [
     "http://127.0.0.1:5173",
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://classconnect-liart.vercel.app/",
+    "https://classconnect-meyyappans-projects.vercel.app/"
 ]
 
 app.add_middleware(
