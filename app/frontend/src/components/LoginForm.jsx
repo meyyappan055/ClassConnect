@@ -9,23 +9,28 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { Progress } from "@/components/ui/progress";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import DownloadPage from "@/pages/DownloadPage";
 import { useNavigate } from "react-router-dom";
-import { Eye } from 'lucide-react';
-import { EyeOff } from 'lucide-react';
-import { Lock } from 'lucide-react';  
+import { Eye, EyeOff, Lock } from 'lucide-react';  
 
 
 export function LoginForm({ className, ...props }) {
-
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [progress, setProgress] = useState({ text: "", value: 0 });
+  
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setProgress({ text: "", value: 0 });
+    }
+  }, [isLoggedIn]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -37,6 +42,7 @@ export function LoginForm({ className, ...props }) {
       console.log("Starting login attempt...");
       const url = "https://class-connect-a970.onrender.com/api/login";
       const formData = { email, password };
+      setProgress({ text: "Logging in and scraping...", value: 25 });
 
       const response = await axios.post(url, formData, {
         headers: {
@@ -45,10 +51,13 @@ export function LoginForm({ className, ...props }) {
         withCredentials: true 
       });
 
-      console.log("Server response:", response.data);
-      setIsLoggedIn(true); 
-      const data = response.data;
+      setProgress({ text: "Login successful! Generating iCal file...", value: 50 });
+      setIsLoggedIn(true);
 
+      const data = response.data;
+      if (data){
+        setProgress({ text: "Processing calendar data...", value: 75 });
+      }
       const generateIcalUrl = "https://class-connect-a970.onrender.com/api/generate-ical";
 
       const postResponse = await axios.post(generateIcalUrl, data, {
@@ -57,19 +66,20 @@ export function LoginForm({ className, ...props }) {
         },
         responseType: "blob",
       });
-      console.log("iCal file generated successfully");
+
+      setProgress({ text: "Calendar file ready!", value: 100 });
 
       const blob = new Blob([postResponse.data], { type: "text/calendar" });
       const download_url = URL.createObjectURL(blob);
       setFileUrl(download_url);
 
-      navigate("/download", { state: { fileUrl: download_url } });
+      setTimeout(() => {
+        navigate("/download", { state: { fileUrl: download_url } });
+      }, 500);
 
-      if (response.data.status === "success") {
-        console.log("Login successful!");
-      }
     } catch (error) {
       console.error("Full error object:", error);
+      setProgress({ text: "Error occurred during login", value: 0 });
       
       let errorMessage = "An error occurred during login";
       if (error.response) {
@@ -82,7 +92,6 @@ export function LoginForm({ className, ...props }) {
       console.error("Login failed:", errorMessage);
     }
   };
-
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -102,33 +111,31 @@ export function LoginForm({ className, ...props }) {
                   id="email"
                   type="email"
                   placeholder="xyz@srmist.edu.in"
-                  value = {email}
-                  onChange = {(e)=> setEmail(e.target.value) }
+                  value={email}
+                  onChange={(e)=> setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password </Label>
-                  
                 </div>
                 <div className="flex flex-row">
                   <Input 
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="pass*ord" 
-                  value = {password}
-                  onChange = {(e)=> setPassword(e.target.value) }
-                  required 
-
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="pass*ord" 
+                    value={password}
+                    onChange={(e)=> setPassword(e.target.value)}
+                    required 
                   />
                   <button 
-                  className="absolute ml-76 mt-2"
-                  onClick = {togglePasswordVisibility}
+                    type="button"
+                    className="absolute ml-76 mt-2"
+                    onClick={togglePasswordVisibility}
                   >
                     {showPassword ? <EyeOff size={20}/> : <Eye size={20} />}
                   </button>
-
                 </div>
               </div>
               <Button type="submit" variant="outline" className="w-full font-medium text-base">
@@ -139,14 +146,25 @@ export function LoginForm({ className, ...props }) {
         </CardContent>
       </Card>
 
-        <div className="font-inter text-base font-medium   text-center mt-1 flex ml-12">
-         <div>
-          <Lock className="mt-0.5" size={18} color="#8b9388"/>
-         </div>
-         <div className="ml-2 font-robotoCondensed text-slate-300">
-           We respect your privacy – no data stored.
-         </div>
+      {progress.text && (
+        <div className="w-full space-y-2">
+          <Progress value={progress.value} className="w-full" />
+          <div className="flex justify-center font-inter font-semibold">
+            <div className="text-slate-300">
+              {progress.text}
+            </div>
           </div>
+        </div>
+      )}
+
+      <div className="font-inter text-base font-medium text-center mt-1 flex ml-12">
+        <div>
+          <Lock className="mt-0.5" size={18} color="#8b9388"/>
+        </div>
+        <div className="ml-2 font-robotoCondensed text-slate-300">
+          We respect your privacy – no data stored.
+        </div>
+      </div>
     </div>
   );
 }

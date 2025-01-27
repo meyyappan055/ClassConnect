@@ -40,7 +40,7 @@ const MainPage = () => {
           <Card 
           icon = {<CalendarSync />}
           title = {"Stay Synchronized Across All Devices"}
-          text = {"Your class schedule, available on all your devices through Google Calendar—anytime, anywhere."}
+          text = {"Your class schedule, available on all your devices through your Calendar—anytime, anywhere."}
           />
         </div>
 

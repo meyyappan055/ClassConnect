@@ -10,7 +10,7 @@ import time
 def navigate_batch1(page):
     page.get_by_role("link", name="Unified Time Table").click()
     page.get_by_role("link", name="Unified Time Table 2024-Batch").click()
-    time.sleep(3)
+    # time.sleep(3)
 
 
 def navigate_batch2(page):
@@ -20,8 +20,8 @@ def navigate_batch2(page):
 
 
 def scrape_batch1_data(page):
-    page.wait_for_load_state('domcontentloaded')
-    page.wait_for_selector("table", timeout=6000)
+    # page.wait_for_load_state('domcontentloaded')
+    # page.wait_for_selector("table", timeout=6000)
     page_html = page.content()
     soup = BeautifulSoup(page_html, "html.parser")
     table = soup.find("table", {"align": "center"})
