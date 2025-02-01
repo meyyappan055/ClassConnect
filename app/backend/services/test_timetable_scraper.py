@@ -46,4 +46,3 @@ def get_batch_number(page):
     batch_number  = int(batch_data[1])  
     
     return batch_number # -> 1 or 2
-        

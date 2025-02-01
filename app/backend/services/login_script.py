@@ -13,7 +13,7 @@ from utils import process_calendar_data
 
 
 def login_and_scrape(playwright: Playwright, email: str, password: str):
-    browser = playwright.chromium.launch(headless=True)
+    browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
     
@@ -34,13 +34,15 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         page.get_by_role("link", name="Academic Reports").wait_for(state="visible")
         page.get_by_role("link", name="Academic Reports").click()
         print("Clicked on 'Academic Reports'")
-        
-
         navigate_even_calendar(page)
+
         day_name, day_order = process_calendar_data(page)
 
+        if day_order == "-":
+            day_order = 0
         if day_order != "-":
             day_order = int(day_order) # 1 or 2..
+            print("converted to int", day_order)
 
         page.get_by_role("link", name="Academic Reports").click()
 
@@ -48,8 +50,12 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         timetable_data = scrape_table_data(page)
 
         batch_number = get_batch_number(page)
+        page.get_by_role("link", name="Academic Reports").click()
+
         if batch_number == 1:
             navigate_batch1(page)
+            page.wait_for_load_state("domcontentloaded")
+            page.wait_for_selector("table[align='center']")
             batch_data = scrape_batch1_data(page)
         elif batch_number == 2: 
             navigate_batch2(page)
