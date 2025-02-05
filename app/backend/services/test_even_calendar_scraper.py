@@ -10,19 +10,33 @@ def navigate_even_calendar(page):
 def january(page):
     january_data = []
 
-    for i in range(1,31):
+    # Handling dates 1 to 28
+    for i in range(1, 29):
         date = page.locator(f"tr:nth-child({i+1}) > td").first
         day = page.locator(f"tr:nth-child({i+1}) > td:nth-child(2)").first
         day_order = page.locator(f"tr:nth-child({i+1}) > td:nth-child(4)").first
 
+        if date and day and day_order:
+            data = {
+                "date": date.text_content().strip(),
+                "day": day.text_content().strip(),
+                "day_order": day_order.text_content().strip()
+            }
+            january_data.append(data)
 
-        if date and day and day_order:  
-                data = {
-                    "date": date.text_content().strip(),
-                    "day": day.text_content().strip(),
-                    "day_order": day_order.text_content().strip()
-                }
-                january_data.append(data)
+    # Handling dates 29, 30, 31 separately
+    for row_index in range(30, 33):
+        date = page.locator(f"tr:nth-child({row_index}) > td").first
+        day = page.locator(f"tr:nth-child({row_index}) > td:nth-child(2)").first
+        day_order = page.locator(f"tr:nth-child({row_index}) > td:nth-child(4)").first
+
+        if date and day and day_order:
+            data = {
+                "date": date.text_content().strip(),
+                "day": day.text_content().strip(),
+                "day_order": day_order.text_content().strip()
+            }
+            january_data.append(data)
 
     return january_data
 
@@ -102,4 +116,3 @@ def may(page):
             may_data.append(data)
 
     return may_data
-
