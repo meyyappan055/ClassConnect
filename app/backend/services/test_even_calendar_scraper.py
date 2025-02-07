@@ -48,7 +48,7 @@ def february(page):
     day_row_1 = page.locator("td:nth-child(7)").first
     day_order_row_1 = page.locator("td:nth-child(9)").first
 
-    february_data.append((date_row_1.text_content(), day_row_1.text_content(), day_order_row_1.text_content()))
+    february_data.append({date_row_1.text_content(), day_row_1.text_content(), day_order_row_1.text_content()})
 
     for i in range(1,28):
         date = page.locator(f"tr:nth-child({i+2}) > td:nth-child(6)").first
@@ -73,7 +73,7 @@ def march(page):
     date_row1 = page.locator("td:nth-child(11)").first
     day_row1 = page.locator("td:nth-child(12)").first
     day_order_row1 = page.locator("td:nth-child(14)").first
-    march_data.append((date_row1.text_content(), day_row1.text_content(), day_order_row1.text_content()))
+    march_data.append({date_row1.text_content(), day_row1.text_content(), day_order_row1.text_content()})
 
     for i in range(1, 31):  
         date = page.locator(f"tr:nth-child({i+2}) > td:nth-child(11)").first
@@ -97,7 +97,7 @@ def april(page):
     date_row1 = page.locator("td:nth-child(16)").first
     day_row1 = page.locator("td:nth-child(17)").first
     day_order_row1 = page.locator("td:nth-child(19)").first
-    april_data.append((date_row1.text_content(), day_row1.text_content(), day_order_row1.text_content()))
+    april_data.append({date_row1.text_content(), day_row1.text_content(), day_order_row1.text_content()})
 
     for i in range(1, 30):  
         date = page.locator(f"tr:nth-child({i+2}) > td:nth-child(16)").first
@@ -121,7 +121,7 @@ def may(page):
     date_row1 = page.locator("td:nth-child(21)").first
     day_row1 = page.locator("td:nth-child(22)").first
     day_order_row1 = page.locator("td:nth-child(24)").first
-    may_data.append((date_row1.text_content(), day_row1.text_content(), day_order_row1.text_content()))
+    may_data.append({date_row1.text_content(), day_row1.text_content(), day_order_row1.text_content()})
 
     for i in range(1, 31):  
         date = page.locator(f"tr:nth-child({i+2}) > td:nth-child(21)").first

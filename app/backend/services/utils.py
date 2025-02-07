@@ -58,9 +58,21 @@ def process_calendar_data(page):
         print(f"Day {day} is out of range for month {month}")
         return [None, None]
 
-    
-    calendar_data = month_data[day - 1]
-    day_name = calendar_data["day"]
-    day_order = calendar_data["day_order"]
 
-    return [day_name, day_order]
+    weekly_schedule = []
+
+    calendar_data = [ month_data[day - 1], month_data[day],month_data[day+1],month_data[day+2],month_data[day+3],month_data[day+4],month_data[day+5]]
+
+    for i in calendar_data:
+        day_name = i["day"]
+        day_order = i["day_order"]
+
+        if day_order == "-":
+            day_order = 0
+        elif day_order != "-":
+            day_order = int(day_order)
+
+        weekly_schedule.append([day_name,day_order])
+        
+    #sample return data => [['Fri', 5], ['Sat', 0], ['Sun', 0], ['Mon', 1], ['Tue', 0], ['Wed', 2], ['Thu', 3]]
+    return weekly_schedule

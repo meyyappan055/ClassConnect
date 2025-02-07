@@ -9,7 +9,9 @@ from test_unified_timetable import navigate_batch1,navigate_batch2,scrape_batch1
 from datetime import date
 from utils import get_current_date
 from utils import process_calendar_data
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 
 
 def login_and_scrape(playwright: Playwright, email: str, password: str):
@@ -20,7 +22,6 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
     try:
         print("trying to go to academia")
         page.goto("https://academia.srmist.edu.in/#CIRCULAR")
-        page.wait_for_load_state("domcontentloaded")
          
         iframe = page.frame(name="zohoiam")
     
@@ -36,13 +37,7 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         print("Clicked on 'Academic Reports'")
         navigate_even_calendar(page)
 
-        day_name, day_order = process_calendar_data(page)
-
-        if day_order == "-":
-            day_order = 0
-        if day_order != "-":
-            day_order = int(day_order) # 1 or 2..
-            print("converted to int", day_order)
+        weekly_data = process_calendar_data(page)
 
         page.get_by_role("link", name="Academic Reports").click()
 
@@ -59,47 +54,72 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
             batch_data = scrape_batch1_data(page)
         elif batch_number == 2: 
             navigate_batch2(page)
+            page.wait_for_load_state("domcontentloaded")
+            page.wait_for_selector("table[align='center']")
             batch_data = scrape_batch2_data(page)
         else:
             batch_data = ["error in fetching batch data"]
         
-        current_day_order_data = batch_data[day_order+2] # 3rd row DO starts , current_day_order_data -> ["day 1","A","C"...]
 
-        def map_slots_to_courses(timetable_data, current_day_order_data, batch_data):
+        def map_weekly_schedule(timetable_data, batch_data, weekly_data):
             slot_to_details = {}
+
             for row in timetable_data[1:]:  
-                course_title = row[0]
-                slot = row[1]
-                room_no = row[2]
-                slot_to_details[slot] = {
-                    "course": course_title,
-                    "room": room_no
-                }
+                slot_to_details[row[1]] = {"course": row[0], "room": row[2]}
 
             time_slots = batch_data[0][1:]  
-            course_details = []
+            weekly_schedule = {}
 
-            for i in range(1, len(current_day_order_data)):
-                slot = current_day_order_data[i]
+            for entry in weekly_data:
+                if not isinstance(entry, list) or len(entry) != 2:
+                    logging.error(f"Invalid entry in weekly_data: {entry}")
+                    continue  
+
+                day_name, day_order = entry  
+                print(f"Processing: {day_name}, Day Order: {day_order}") 
+                if day_order == 0:  
+                    weekly_schedule[day_name] = []
+                    continue
+
+                if day_order + 2 >= len(batch_data):  
+                    logging.error(f"Day order {day_order} out of bounds for batch_data")
+                    weekly_schedule[day_name] = []
+                    continue
+
+                current_day_order_data = batch_data[day_order + 2] # 3rd row DO starts , current_day_order_data -> ["day 1","A","C"...]
                 
-                main_slot = slot.split('/')[0].strip() # Handle slots with X (like 'A / X')
+                course_details = []
 
-                if main_slot in slot_to_details:
-                    updated_time_slot = time_slots[i-1].replace('\t', '') # /t in between
-                    start_time = updated_time_slot.split('-')[0].strip()
-                    end_time = updated_time_slot.split('-')[1].strip()
+                logging.debug(f"Processing {day_name} (Day Order {day_order}) -> {current_day_order_data}")
 
-                    course_info = [
-                        slot_to_details[main_slot]["course"],
-                        start_time,
-                        end_time,                       
-                        slot_to_details[main_slot]["room"]
-                    ]
-                    course_details.append(course_info)
-            
-            return course_details
+                for i in range(1, len(current_day_order_data)):
+                    slot = current_day_order_data[i]
+                    main_slot = slot.split('/')[0].strip()  
 
-        scraped_data = map_slots_to_courses(timetable_data, current_day_order_data,batch_data)
+                    if main_slot not in slot_to_details:
+                        logging.warning(f"Slot {main_slot} not found in slot_to_details")
+                        continue
+
+                    updated_time_slot = time_slots[i-1].replace('\t', '')
+                    try:
+                        start_time, end_time = map(str.strip, updated_time_slot.split('-'))
+                        course_info = [
+                            slot_to_details[main_slot]["course"],
+                            start_time,
+                            end_time,
+                            slot_to_details[main_slot]["room"]
+                        ]
+                        course_details.append(course_info)
+                    except ValueError as e:
+                        logging.error(f"Time slot error: {updated_time_slot}, {e}")
+                        continue
+
+                weekly_schedule[day_name] = course_details
+
+            return weekly_schedule
+
+
+        weekly_schedule = (map_weekly_schedule(timetable_data,batch_data,weekly_data))
 
 
         span_selector = ".zc-header .navbar_user_name"
@@ -108,7 +128,7 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
 
 
         print("SUCCESS") 
-        print(json.dumps(scraped_data))  
+        print(json.dumps(weekly_schedule))  
         return True
         
     except Exception as e:
