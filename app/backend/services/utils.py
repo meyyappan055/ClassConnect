@@ -64,6 +64,7 @@ def process_calendar_data(page):
     calendar_data = [ month_data[day - 1], month_data[day],month_data[day+1],month_data[day+2],month_data[day+3],month_data[day+4],month_data[day+5]]
 
     for i in calendar_data:
+        date = i["date"]
         day_name = i["day"]
         day_order = i["day_order"]
 
@@ -72,7 +73,7 @@ def process_calendar_data(page):
         elif day_order != "-":
             day_order = int(day_order)
 
-        weekly_schedule.append([day_name,day_order])
+        weekly_schedule.append([date,day_name,day_order])
         
-    #sample return data => [['Fri', 5], ['Sat', 0], ['Sun', 0], ['Mon', 1], ['Tue', 0], ['Wed', 2], ['Thu', 3]]
+    #sample return data => [['2025-2-07','Fri', 5], ['2025-2-08','Sat', 0], ['2025-2-09','Sun', 0], ['2025-2-10','Mon', 1], ['2025-2-11','Tue', 0], ['2025-2-12','Wed', 2], ['2025-2-13','Thu', 3]]
     return weekly_schedule

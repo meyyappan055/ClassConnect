@@ -1,17 +1,26 @@
 from fastapi import APIRouter, HTTPException , Request
 from fastapi.responses import StreamingResponse
 from io import BytesIO
-from datetime import date
+from datetime import datetime
 from typing import List
 
 router = APIRouter()
 
-def get_current_date():
-    current_date = str(date.today())  # "2025-01-21"
-    current_year = current_date[0:4]
-    current_month = current_date[5:7]
-    current_day = current_date[8:10]
-    return current_year, current_month, current_day
+
+def convert_to_utc(year, month, day, time):
+    hours, minutes = map(int, time.split(":"))
+
+    if hours < 8: 
+        hours += 12
+
+    total_minutes = (hours * 60 + minutes) - (5 * 60 + 30)
+
+    if total_minutes < 0:
+        total_minutes += 24 * 60
+        day = str(int(day) - 1).zfill(2)
+
+    utc_hours, utc_minutes = divmod(total_minutes, 60)
+    return f"{year}{month}{day}T{str(utc_hours).zfill(2)}{str(utc_minutes).zfill(2)}00Z"
 
 
 @router.post("/generate-ical")
@@ -24,41 +33,33 @@ async def generate_ical(request:Request):
     except Exception as e:
         raise HTTPException(status_code=422, detail="Invalid input format: " + str(e))
 
-    year, month, day = get_current_date()
-    
-    def create_ics_file(events):
+
+    def create_ics_file(schedule):
         ics_content = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Class Connect//NONSGML v1.0//EN\n"
-        
-        for i, event in enumerate(events):
-            title, start_time, end_time, location = event
-            
-            start_hour, start_mins = start_time.split(":")
-            end_hour, end_mins = end_time.split(":")
-            
-            start_hour_utc = int(start_hour) - 5
-            start_mins_utc = int(start_mins) - 30
-            end_hour_utc = int(end_hour) - 5
-            end_mins_utc = int(end_mins) - 30
+        event_count = 0
 
-            if start_mins_utc < 0:
-                start_hour_utc -= 1
-                start_mins_utc += 60
-                
-            if end_mins_utc < 0:
-                end_hour_utc -= 1
-                end_mins_utc += 60
+        for each_data in schedule:
+            event_date, day, events = each_data
+            if not events:
+                continue
 
-            if start_hour_utc < 0:
-                start_hour_utc += 24 
-            if end_hour_utc < 0:
-                end_hour_utc += 24 
-    
-            formatted_start = f"{year}{month}{day}T{str(start_hour_utc).zfill(2)}{str(start_mins_utc).zfill(2)}00Z"
-            formatted_end = f"{year}{month}{day}T{str(end_hour_utc).zfill(2)}{str(end_mins_utc).zfill(2)}00Z"
+            year, month, day = event_date.split("-")
+            month, day = month.zfill(2), day.zfill(2)
 
-            event_content = f"""BEGIN:VEVENT
-UID:event{i}@example.com
-DTSTAMP:{year}{month}{day}T000000Z
+            for i, (title, start_time, end_time, location) in enumerate(events):
+                if not end_time:
+                    if i + 1 < len(events) and events[i + 1][0] == title:
+                        end_time = events[i + 1][1]  
+                    else:
+                        continue  
+
+                formatted_start = convert_to_utc(year, month, day, start_time)
+                formatted_end = convert_to_utc(year, month, day, end_time)
+                dtstamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+
+                event_content = f"""BEGIN:VEVENT
+UID:event{event_count}@classconnect.com
+DTSTAMP:{dtstamp}
 DTSTART:{formatted_start}
 DTEND:{formatted_end}
 SUMMARY:{title}
@@ -66,8 +67,9 @@ LOCATION:{location}
 DESCRIPTION:Made with Class Connect :)
 END:VEVENT
 """
-            ics_content += event_content
-        
+                ics_content += event_content
+                event_count += 1
+
         ics_content += "END:VCALENDAR"
         return ics_content
     

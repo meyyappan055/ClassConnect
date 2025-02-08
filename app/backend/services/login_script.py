@@ -14,6 +14,11 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
+def format_date(day_number):
+    current_year, current_month, _ = get_current_date()
+    return f"{current_year}-{current_month}-{str(day_number).zfill(2)}"
+
+
 def login_and_scrape(playwright: Playwright, email: str, password: str):
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
@@ -25,8 +30,10 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
          
         iframe = page.frame(name="zohoiam")
     
-        iframe.get_by_label("Enter Email Address").wait_for(state="visible")
-        iframe.get_by_label("Enter Email Address").fill(email)
+        page.locator("iframe[name=\"zohoiam\"]").content_frame.get_by_placeholder("Email Address", exact=True).click()
+        # iframe.get_by_label("Enter Email Address").wait_for(state="visible")
+
+        iframe.get_by_placeholder("Email Address", exact=True).fill(email)
         iframe.get_by_role("button", name="Next").click()
         iframe.get_by_placeholder("Enter Password").wait_for(state="visible")
         iframe.get_by_placeholder("Enter Password").fill(password)
@@ -68,39 +75,40 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
                 slot_to_details[row[1]] = {"course": row[0], "room": row[2]}
 
             time_slots = batch_data[0][1:]  
-            weekly_schedule = {}
+            weekly_schedule = []
 
             for entry in weekly_data:
-                if not isinstance(entry, list) or len(entry) != 2:
+                if not isinstance(entry, list) or len(entry) != 3:
                     logging.error(f"Invalid entry in weekly_data: {entry}")
                     continue  
 
-                day_name, day_order = entry  
-                print(f"Processing: {day_name}, Day Order: {day_order}") 
+                day_number, day_name, day_order = entry  
+                date = format_date(day_number)  
+
+                print(f"Processing: {date}, {day_name}, Day Order: {day_order}")  
+
                 if day_order == 0:  
-                    weekly_schedule[day_name] = []
+                    weekly_schedule.append([date, day_name, []])  
                     continue
 
                 if day_order + 2 >= len(batch_data):  
                     logging.error(f"Day order {day_order} out of bounds for batch_data")
-                    weekly_schedule[day_name] = []
+                    weekly_schedule.append([date, day_name, []])
                     continue
 
                 current_day_order_data = batch_data[day_order + 2] # 3rd row DO starts , current_day_order_data -> ["day 1","A","C"...]
                 
                 course_details = []
 
-                logging.debug(f"Processing {day_name} (Day Order {day_order}) -> {current_day_order_data}")
-
                 for i in range(1, len(current_day_order_data)):
                     slot = current_day_order_data[i]
                     main_slot = slot.split('/')[0].strip()  
 
                     if main_slot not in slot_to_details:
-                        logging.warning(f"Slot {main_slot} not found in slot_to_details")
                         continue
 
                     updated_time_slot = time_slots[i-1].replace('\t', '')
+
                     try:
                         start_time, end_time = map(str.strip, updated_time_slot.split('-'))
                         course_info = [
@@ -114,7 +122,7 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
                         logging.error(f"Time slot error: {updated_time_slot}, {e}")
                         continue
 
-                weekly_schedule[day_name] = course_details
+                weekly_schedule.append([date, day_name, course_details])
 
             return weekly_schedule
 
