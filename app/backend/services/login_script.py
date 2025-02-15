@@ -51,7 +51,7 @@ def perform_login(page, email, password):
         return False
 
 def login_and_scrape(playwright: Playwright, email: str, password: str):
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=True, args=["--disable-blink-features=AutomationControlled", "--disable-gpu"])
     context = browser.new_context()
     context.route("**/*.{png,jpg,jpeg,svg,gif,woff,woff2,ttf}", lambda route: route.abort())
     page = context.new_page()

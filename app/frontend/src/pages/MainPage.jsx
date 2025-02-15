@@ -12,7 +12,7 @@ const MainPage = () => {
   return (
     <section >
         <div className='mt-28 flex font-inter font-bold text-3xl md:text-4-5xl justify-center items-center text-center'>
-          Welcome to ClassConnect
+          Welcome to ClassConnect 📅
         </div>
 
         <div className='md:max-w-3xl px-10 mx-auto mt-6 flex font-inter font-semibold text-base justify-center items-center text-center text-gray-300'>
