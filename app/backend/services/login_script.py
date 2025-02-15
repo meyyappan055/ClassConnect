@@ -11,6 +11,10 @@ from utils import get_current_date, process_calendar_data
 import logging
 
 
+def get_user_name(email):
+            email_parts = email.split("@")
+            return email_parts[0]
+
 def format_date(day_number):
     current_year, current_month, _ = get_current_date()
     return f"{current_year}-{current_month}-{str(day_number).zfill(2)}"
@@ -134,9 +138,12 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
 
         weekly_schedule = map_weekly_schedule(timetable_data, batch_data, weekly_data)
 
-        page.locator(".zc-header .navbar_user_name").click()
-        page.locator("a:has-text('Logout')").click()
-        page.locator("#portalLogout").click()
+        user_name = get_user_name(email)
+
+        page.get_by_role("button", name=f"profile image {user_name}").click()
+        page.locator("div").filter(has_text=f"{user_name} {email}").nth(3).wait_for(state="visible")
+        page.locator('#portalLogout').click()
+        page.wait_for_timeout(1000)
 
         print("SUCCESS")
         print(json.dumps(weekly_schedule))
