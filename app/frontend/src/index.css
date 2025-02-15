@@ -39,6 +39,12 @@
     .ml-76 {
         margin-left: 19rem 
     }
+
+    .text-4-5xl {
+        font-size: 42px ;
+        line-height: 2.5rem ;
+    }
+
 }
 
 @layer base {
