@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException , Response
 from pydantic import BaseModel
 import subprocess
 import os
@@ -42,11 +42,10 @@ async def login(login_data: LoginData):
                 output_lines = result.stdout.strip().split('\n')
                 data_line = output_lines[output_lines.index("SUCCESS") + 1]
                 json_data = json.loads(data_line)
-                
+
                 return {
                     "status": "success",
                     "message": "Login successful",
-                    # fetched data
                     "data": json_data
                 }
             except Exception as e:
