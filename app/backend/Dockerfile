@@ -2,9 +2,11 @@ FROM python:3.11
 
 WORKDIR /app
 
-COPY . /app
+COPY app/backend/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app/backend/ .
 
 RUN playwright install --with-deps
 
