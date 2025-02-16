@@ -43,7 +43,7 @@ def perform_login(page, email, password):
         # iframe.get_by_role("button", name="Sign In").click()
         iframe.locator("button:has-text('Sign In')").click()
 
-        page.locator("a:has-text('Academic Reports')").click()
+        page.get_by_role("link", name="Academic Reports").click()
         
         return True
     except Exception as e:
@@ -62,18 +62,18 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
             print("Login failed.")
             return False
         
-        page.locator("a:has-text('Academic Reports')").click()
+        page.get_by_role("link", name="Academic Reports").click()
         print("Clicked on 'Academic Reports'")
         
         navigate_even_calendar(page)
         weekly_data = process_calendar_data(page)
 
-        page.locator("a:has-text('Academic Reports')").click()
+        page.get_by_role("link", name="Academic Reports").click()
         navigate_to_timetable(page)
         timetable_data = scrape_table_data(page)
 
         batch_number = get_batch_number(page)
-        page.locator("a:has-text('Academic Reports')").click()
+        page.get_by_role("link", name="Academic Reports").click()
 
         if batch_number == 1:
             navigate_batch1(page)
