@@ -120,27 +120,31 @@ export function LoginForm({ className, ...props }) {
                 <div className="flex items-center">
                   <Label htmlFor="password">Password </Label>
                 </div>
-                <div className="flex flex-row">
-                  <Input 
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="pass*ord" 
-                    value={password}
-                    onChange={(e)=> setPassword(e.target.value)}
-                    required 
-                  />
-                  <button 
-                    type="button"
-                    className="absolute ml-76 mt-2"
-                    onClick={togglePasswordVisibility}
-                  >
-                    {showPassword ? <EyeOff size={20}/> : <Eye size={20} />}
-                  </button>
-                </div>
-              </div>
-              <Button type="submit" variant="outline" className="w-full font-medium text-base">
-                Login
+                <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="pass*ord"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="pr-10" 
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
               </Button>
+                </div>
+                  </div>
+                  <Button type="submit" variant="outline" className="w-full font-medium text-base">
+                    Login
+                  </Button>
             </div>
           </form>
         </CardContent>
@@ -157,13 +161,9 @@ export function LoginForm({ className, ...props }) {
         </div>
       )}
 
-      <div className="font-inter text-base font-medium text-center mt-1 flex ml-12">
-        <div>
-          <Lock className="mt-0.5" size={18} color="#8b9388"/>
-        </div>
-        <div className="ml-2 font-robotoCondensed text-slate-300">
-          We respect your privacy – no data stored.
-        </div>
+<div className="mt-1 flex items-center justify-center space-x-2">
+        <Lock className="h-4 w-4" />
+        <p className="font-robotoCondensed text-slate-300 text-base font-medium" >We respect your privacy – no data stored.</p>
       </div>
     </div>
   );
