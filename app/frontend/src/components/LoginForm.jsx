@@ -40,7 +40,7 @@ export function LoginForm({ className, ...props }) {
     e.preventDefault();
     try {
       console.log("Starting login attempt...");
-      const url = "https://class-connect-a970.onrender.com/api/login";
+      const url = "https://classconnect-dockerized.onrender.com/api/login";
       const formData = { email, password };
       setProgress({ text: "Logging in and scraping...", value: 25 });
 
@@ -58,7 +58,7 @@ export function LoginForm({ className, ...props }) {
       if (data){
         setProgress({ text: "Processing calendar data...", value: 75 });
       }
-      const generateIcalUrl = "https://class-connect-a970.onrender.com/api/generate-ical";
+      const generateIcalUrl = "https://classconnect-dockerized.onrender.com/api/generate-ical";
 
       const postResponse = await axios.post(generateIcalUrl, data, {
         headers: {
