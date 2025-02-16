@@ -4,6 +4,7 @@ import About from "./pages/About"
 import DownloadPage from "./pages/DownloadPage"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
+import {Analytics} from '@vercel/analytics/react';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/about" element= {<About />} />
           <Route path="/download" element = {<DownloadPage />} />
         </Routes>
+        <Analytics />
       </div>
     </BrowserRouter>
   )
