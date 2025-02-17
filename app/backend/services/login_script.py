@@ -38,12 +38,9 @@ def perform_login(page, email, password):
         except Exception:
             iframe.get_by_role("button", name="Next").click()
 
-        try:
-            iframe.get_by_placeholder("Enter Password").wait_for(state="visible")
-            iframe.get_by_placeholder("Enter Password").fill(password)
-        except Exception:
-            iframe.locator("input[placeholder='Enter Password']").wait_for(state="visible")
-            iframe.locator("input[placeholder='Enter Password']").fill(password)
+        iframe.get_by_placeholder("Enter Password").wait_for(state="visible")
+        page.locator("iframe[name=\"zohoiam\"]").content_frame.get_by_placeholder("Enter Password").click()
+        iframe.get_by_placeholder("Enter Password").fill(password)
 
         try:
             iframe.locator("button:has-text('Sign In')").click()
