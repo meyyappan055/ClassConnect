@@ -27,21 +27,30 @@ def perform_login(page, email, password):
 
         page.wait_for_selector("iframe[name=\"zohoiam\"]")
         iframe = page.frame(name="zohoiam")
-    
-        # iframe.get_by_placeholder("Email Address", exact=True).fill(email)
-        iframe.locator("input[placeholder='Email Address']").fill(email)
-        # iframe.get_by_role("button", name="Next").click()
-        iframe.locator("button:has-text('Next')").nth(0).click()
 
+        try:
+            iframe.locator("input[placeholder='Email Address']").fill(email)
+        except Exception:
+            iframe.get_by_placeholder("Email Address", exact=True).fill(email)
 
-        # iframe.get_by_placeholder("Enter Password").wait_for(state="visible")
-        # iframe.get_by_placeholder("Enter Password").fill(password)
+        try:
+            iframe.locator("button:has-text('Next')").nth(0).click()
+        except Exception:
+            iframe.get_by_role("button", name="Next").click()
 
-        iframe.locator("input[placeholder='Enter Password']").wait_for(state="visible")
-        iframe.locator("input[placeholder='Enter Password']").fill(password)
+        try:
+            iframe.get_by_placeholder("Enter Password").wait_for(state="visible")
+            iframe.get_by_placeholder("Enter Password").fill(password)
+        except Exception:
+            iframe.locator("input[placeholder='Enter Password']").wait_for(state="visible")
+            iframe.locator("input[placeholder='Enter Password']").fill(password)
 
-        # iframe.get_by_role("button", name="Sign In").click()
-        iframe.locator("button:has-text('Sign In')").click()
+        try:
+            iframe.locator("button:has-text('Sign In')").click()
+
+        except Exception:
+            iframe.get_by_role("button", name="Sign In").click()
+
 
         page.get_by_role("link", name="Academic Reports").click()
         
