@@ -48,7 +48,7 @@ def perform_login(page, email, password):
         except Exception:
             iframe.get_by_role("button", name="Sign In").click()
 
-        page.get_by_role("link", name="Academic Reports").wait_for(state="visible")
+        page.get_by_role("link", name="Academic Reports").wait_for(state="visible", timeout=10000)
         page.get_by_role("link", name="Academic Reports").click()
         
         return True
