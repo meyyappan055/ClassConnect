@@ -11,7 +11,11 @@ def navigate_to_timetable(page):
     
 def scrape_table_data(page):
     """Scrape the timetable table data."""
-    page.wait_for_selector("table.course_tbl", timeout=2000)
+    try:
+        page.wait_for_selector("table.course_tbl", timeout=8000)
+    except Exception:
+        page.locator("#zc-viewcontainer_My_Time_Table_2023_24 table").filter(has_text="S.No Course Code Course Title")
+
     page_html = page.content()
     soup = BeautifulSoup(page_html, "html.parser")
     table = soup.find("table", class_="course_tbl")
@@ -27,6 +31,7 @@ def scrape_table_data(page):
         content = [subject_title, subject_slot, room_no]
         data.append(content)
 
+    print(data)
     return data
 
 
@@ -44,5 +49,5 @@ def get_batch_number(page):
         batch_data.append(col1)
     
     batch_number  = int(batch_data[1])  
-    
+    print(batch_number)
     return batch_number # -> 1 or 2

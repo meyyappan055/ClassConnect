@@ -6,19 +6,18 @@ from bs4 import BeautifulSoup
 import time
 
 def navigate_batch1(page):
-
     page.get_by_role("link", name="Unified Time Table", exact=True).click()
     page.wait_for_load_state("networkidle")
     page.get_by_role("link", name="Unified Time Table 2024-Batch").click()
-    time.sleep(3)
+    time.sleep(2)
     page.wait_for_load_state("networkidle")
 
 def navigate_batch2(page):
-    page.get_by_role("link", name=" Unified Time Table", exact=True).click()
+    page.get_by_role("link", name="Unified Time Table", exact=True).click()
     page.wait_for_load_state("networkidle")
-
-    page.get_by_role("link", name=" Unified Time Table-2024-Batch").click()
-    page.wait_for_load_state("networkidle") 
+    page.get_by_role("link", name="Unified Time Table-2024-Batch").click()
+    time.sleep(2)
+    page.wait_for_load_state("networkidle")
 
 
 def scrape_batch1_data(page):

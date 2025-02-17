@@ -48,7 +48,7 @@ def perform_login(page, email, password):
         except Exception:
             iframe.get_by_role("button", name="Sign In").click()
 
-
+        page.get_by_role("link", name="Academic Reports").wait_for(state="visible")
         page.get_by_role("link", name="Academic Reports").click()
         
         return True
@@ -68,6 +68,7 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
             print("Login failed.")
             return False
         
+        page.get_by_role("link", name="Academic Reports").wait_for(state="visible")
         page.get_by_role("link", name="Academic Reports").click()
         print("Clicked on 'Academic Reports'")
         
@@ -82,15 +83,36 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         page.get_by_role("link", name="Academic Reports").click()
 
         if batch_number == 1:
-            navigate_batch1(page)
-            page.wait_for_selector("table[align='center']")
+            try:
+                navigate_batch1(page)
+            except Exception as e:
+                print(f"Error in navigate_batch1: {str(e)}")
+                return False
+
+            try:
+                page.wait_for_selector("table[align='center']")
+            except Exception as e:
+                print(f"Error in page.wait_for_selector: {str(e)}")
+                return False
+            
             batch_data = scrape_batch1_data(page)
         elif batch_number == 2: 
-            navigate_batch2(page)
-            page.wait_for_selector("table[align='center']")
+            try:
+                navigate_batch2(page)
+            except Exception as e:
+                print(f"Error in navigate_batch2: {str(e)}")
+                return False
+            
+            try:
+                page.wait_for_selector("table[align='center']")
+            except Exception as e:
+                print(f"Error in page.wait_for_selector: {str(e)}")
+                return False
+            
             batch_data = scrape_batch2_data(page)
         else:
-            batch_data = ["error in fetching batch data"]
+            logging.error(f"Invalid batch number: {batch_number}")
+            return False
         
         def map_weekly_schedule(timetable_data, batch_data, weekly_data):
             slot_to_details = {row[1]: {"course": row[0], "room": row[2]} for row in timetable_data[1:]}
@@ -152,7 +174,7 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         page.wait_for_timeout(1000)
 
         print("SUCCESS")
-        print(json.dumps(weekly_schedule))
+        print(json.dumps(weekly_schedule, email))
         return True
 
     except Exception as e:
