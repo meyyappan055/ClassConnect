@@ -181,7 +181,8 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         print(f"ERROR: {str(e)}")
         return False
     finally:
-        browser.close()
+        if 'browser' in locals():
+            browser.close()
 
 def main():
     if len(sys.argv) != 3:
