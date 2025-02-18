@@ -31,7 +31,7 @@ def scrape_table_data(page):
         content = [subject_title, subject_slot, room_no]
         data.append(content)
 
-    print(data)
+    # print(data)
     return data
 
 
@@ -49,5 +49,5 @@ def get_batch_number(page):
         batch_data.append(col1)
     
     batch_number  = int(batch_data[1])  
-    print(batch_number)
+    print("batchnumber: ", batch_number)
     return batch_number # -> 1 or 2

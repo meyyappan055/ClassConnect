@@ -22,6 +22,7 @@ def format_date(day_number):
 def perform_login(page, email, password):
     """Handles login process"""
     try:
+        print(email , " logging in")
         page.goto("https://academia.srmist.edu.in/#CIRCULAR")
         
 
@@ -62,10 +63,11 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
     context.route("**/*.{png,jpg,jpeg,svg,gif,woff,woff2,ttf}", lambda route: route.abort())
     page = context.new_page()
     
+    
     try:
         print("Performing fresh login...")
         if not perform_login(page, email, password):
-            print("Login failed.")
+            print(f"Login failed for {email}")
             return False
         
         page.get_by_role("link", name="Academic Reports").wait_for(state="visible")
