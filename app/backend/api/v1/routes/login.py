@@ -31,32 +31,17 @@ async def login(login_data: LoginData):
             capture_output=True,
             text=True
         )
-        
-        
-        print("STDOUT:", result.stdout)
-        print("STDERR:", result.stderr)
-        
-        if "SUCCESS" in result.stdout:
-            try:
-                
-                output_lines = result.stdout.strip().split('\n')
-                data_line = output_lines[output_lines.index("SUCCESS") + 1]
-                json_data = json.loads(data_line)
 
-                return {
-                    "status": "success",
-                    "message": "Login successful",
-                    "data": json_data
-                }
-            except Exception as e:
-                print(f"Data parsing error: {e}")
-                raise HTTPException(status_code=500, detail="Failed to parse data")
-        else:
-            error_msg = result.stderr.strip() or result.stdout.strip() or "Login failed"
-            raise HTTPException(status_code=401, detail=error_msg)
-            
-    except HTTPException as e:
-        raise e
+        if result.returncode == 0:
+            try:
+                json_data = json.loads(result.stdout) 
+                return json_data
+            except json.JSONDecodeError:
+                raise HTTPException(status_code=500, detail="Failed to parse JSON response")
+
+        error_msg = result.stderr.strip() or "Login failed"
+        raise HTTPException(status_code=401, detail=error_msg)
+
     except Exception as e:
-        print(f"Unexpected error: {str(e)}")
+        print("An error occurred:", str(e))
         raise HTTPException(status_code=500, detail=str(e))
