@@ -175,10 +175,8 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         page.locator('#portalLogout').click()
         page.wait_for_timeout(1000)
 
-        print({
-            "status": "success",
-            "message": "Weekly schedule data has been successfully scraped."
-        })
+        print("SUCCESS")
+        print(json.dumps(weekly_schedule))
         return True
 
     except Exception as e:
@@ -197,10 +195,7 @@ def main():
     password = sys.argv[2]
     
     with sync_playwright() as playwright:
-        result = login_and_scrape(playwright, email, password)
-
-        if result:
-            sys.stdout.buffer.write(json.dumps(result).encode())
+        if login_and_scrape(playwright, email, password):
             sys.exit(0)
         else:
             sys.exit(1)
