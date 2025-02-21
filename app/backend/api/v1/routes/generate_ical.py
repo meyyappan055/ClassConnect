@@ -26,7 +26,8 @@ def convert_to_utc(year, month, day, time):
 @router.post("/generate-ical")
 async def generate_ical(request:Request):
     body = await request.json()
-    print("Received data:", body)
+    # print("Received data:", body)
+    print("received data")
 
     try:
         classes = body.get("data")  
@@ -77,6 +78,7 @@ END:VEVENT
     try:
         ics_content = create_ics_file(classes)
         file_stream = BytesIO(ics_content.encode("utf-8"))
+        print("Generated ics file")
         return StreamingResponse(
             file_stream,
             media_type="text/calendar",

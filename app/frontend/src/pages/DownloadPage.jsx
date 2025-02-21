@@ -30,7 +30,7 @@ const DownloadPage = () => {
                 </button>
               </div>
             ) : (
-              <div className="text-center text-2xl mt-40 text-red-500">No file available to download , Kindly login first.</div>
+              <div className="text-center text-2xl mt-40 text-red-500 font-semibold">No file available to download , Kindly <a className='underline ' href="/login">Login</a> first. </div>
             )}
           </div>
         );

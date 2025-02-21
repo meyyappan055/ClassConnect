@@ -176,7 +176,7 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         page.wait_for_timeout(1000)
 
         print("SUCCESS")
-        print(json.dumps(weekly_schedule))
+        print("Weekly schedule data has been successfully scraped.")
         return True
 
     except Exception as e:
