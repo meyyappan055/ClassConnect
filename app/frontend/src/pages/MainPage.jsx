@@ -6,11 +6,33 @@ import { CalendarCheck } from 'lucide-react';
 import { CalendarSync } from 'lucide-react';
 import { AlarmClockCheck } from 'lucide-react';
 import Card from '@/components/Card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 
 const MainPage = () => {
   return (
-    <section >
+    
+  <section>
+      <Dialog open={true}>
+        <DialogContent className="max-w-md text-center">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">BRB, Fixing Things! 🛠️ </DialogTitle>
+          </DialogHeader>
+          <p>Chill for a bit, I’ll have it back soon.</p>
+          <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
+            Refresh Later
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+
         <div className='mt-28 flex font-inter font-bold text-3xl md:text-4-5xl justify-center items-center text-center'>
           Welcome to ClassConnect 📅
         </div>
@@ -57,7 +79,7 @@ const MainPage = () => {
 
         </div>
 
-    </section>
+      </section>
   )
 }
 
