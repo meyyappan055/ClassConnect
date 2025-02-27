@@ -39,7 +39,8 @@ def perform_login(page, email, password):
         except Exception:
             iframe.get_by_role("button", name="Next").click()
 
-        iframe.get_by_placeholder("Enter Password").wait_for(state="visible")
+        iframe.get_by_placeholder("Enter Password").wait_for(state="visible", timeout=5000)
+
         page.locator("iframe[name=\"zohoiam\"]").content_frame.get_by_placeholder("Enter Password").click()
         iframe.get_by_placeholder("Enter Password").fill(password)
 
@@ -74,15 +75,27 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         page.get_by_role("link", name="Academic Reports").click()
         print("Clicked on 'Academic Reports'")
         
-        navigate_even_calendar(page)
-        weekly_data = process_calendar_data(page)
-
+        try : 
+            navigate_even_calendar(page)
+            weekly_data = process_calendar_data(page)
+        except Exception as e:
+            print(f"Error in even calendar scraping: {e}")
+            return False
+        
         page.get_by_role("link", name="Academic Reports").click()
-        navigate_to_timetable(page)
-        timetable_data = scrape_table_data(page)
+        
+        try :
+            navigate_to_timetable(page)
+            timetable_data = scrape_table_data(page)
+        except Exception as e:
+            print(f"Error in timetable scraping: {e}")
+            return False
 
-        batch_number = get_batch_number(page)
-        page.get_by_role("link", name="Academic Reports").click()
+        try:
+            batch_number = get_batch_number(page)
+            page.get_by_role("link", name="Academic Reports").click()
+        except Exception as e:
+            print(f"Error in getting batch number: {e}")
 
         if batch_number == 1:
             try:
@@ -166,10 +179,13 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
 
             return weekly_schedule
 
-        weekly_schedule = map_weekly_schedule(timetable_data, batch_data, weekly_data)
-
+        try:
+            weekly_schedule = map_weekly_schedule(timetable_data, batch_data, weekly_data)
+        except Exception as e:
+            print(f"Error in mapping weekly schedule: {str(e)}")
+            return False
+        
         user_name = get_user_name(email)
-
         page.get_by_role("button", name=f"profile image {user_name}").click()
         page.locator("div").filter(has_text=f"{user_name} {email}").nth(3).wait_for(state="visible")
         page.locator('#portalLogout').click()
