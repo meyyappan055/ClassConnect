@@ -22,7 +22,7 @@ def process_calendar_data(page):
     # print(f"Year: {year}, Month: {month}, Day: {day}")
     
     # For testing purposes
-    month = 2
+    # month = 2
     
     month_data = None
     if month == 1:

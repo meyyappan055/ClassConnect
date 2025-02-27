@@ -30,7 +30,7 @@ def january(page):
 
     # Handling dates 29, 30, 31 separately
     for row_index in range(30, 33):
-        date = page.locator(f"tr:nth-child({row_index}) > td").first
+        date = page.get_by_role("cell", name=f"{row_index-1}").first
         day = page.locator(f"tr:nth-child({row_index}) > td:nth-child(2)").first
         day_order = page.locator(f"tr:nth-child({row_index}) > td:nth-child(4)").first
 
@@ -50,36 +50,45 @@ def january(page):
 
 def february(page):
     february_data = []
-    date_row_1 = page.locator("td:nth-child(6)").first
-    day_row_1 = page.locator("td:nth-child(7)").first
-    day_order_row_1 = page.locator("td:nth-child(9)").first
-
-    # february_data.append({date_row_1.text_content(), day_row_1.text_content(), day_order_row_1.text_content()})
 
     try:
+        date_row_1 = page.locator("td:nth-child(6)").first
+        day_row_1 = page.locator("td:nth-child(7)").first
+        day_order_row_1 = page.locator("td:nth-child(9)").first
+
+        if not date_row_1 or not day_row_1 or not day_order_row_1:
+            raise ValueError("One or more elements in the first row were not found")
+
         data = {
             "date": date_row_1.text_content().strip(),
             "day": day_row_1.text_content().strip(),
             "day_order": day_order_row_1.text_content().strip()
         }
         february_data.append(data)
+
     except Exception as e:
-        print(f"Error processing February first row: {str(e)}")
+        print(f"[ERROR] February first row: {str(e)}")
 
+    for i in range(1, 28):
+        try:
+            row_index = i + 2  
 
-    for i in range(1,28):
-        date = page.locator(f"tr:nth-child({i+2}) > td:nth-child(6)").first
-        day = page.locator(f"tr:nth-child({i+2}) > td:nth-child(7)").first
-        day_order = page.locator(f"tr:nth-child({i+2}) > td:nth-child(9)").first
+            date = page.locator(f"tr:nth-child({row_index}) > td:nth-child(6)").first
+            day = page.locator(f"tr:nth-child({row_index}) > td:nth-child(7)").first
+            day_order = page.locator(f"tr:nth-child({row_index}) > td:nth-child(9)").first
 
+            if not date or not day or not day_order:
+                raise ValueError(f"Row {row_index}: One or more elements not found")
 
-        if date and day and day_order:  
-                data = {
-                    "date": date.text_content().strip(),
-                    "day": day.text_content().strip(),
-                    "day_order": day_order.text_content().strip()
-                }
-                february_data.append(data)
+            data = {
+                "date": date.text_content().strip(),
+                "day": day.text_content().strip(),
+                "day_order": day_order.text_content().strip()
+            }
+            february_data.append(data)
+
+        except Exception as e:
+            print(f"[ERROR] Row {row_index}: {str(e)}")
 
     return february_data
 
