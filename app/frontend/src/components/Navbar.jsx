@@ -3,6 +3,7 @@ import { LogIn } from 'lucide-react';
 import { House } from 'lucide-react';
 import { Info } from 'lucide-react';
 import { CalendarClock } from 'lucide-react';
+import { Github } from 'lucide-react';
 import {Link} from 'react-router-dom';
 
 
@@ -14,7 +15,13 @@ const Navbar = () => {
             <h2 className='text-2xl font-inter font-bold text-white'>ClassConnect</h2>    
         </div>   
 
-        <div className='mt-4 mr-1 '>
+        <div className='mt-5 mr-1 '>
+            <Link to="https://github.com/meyyappan055/ClassConnect">
+                <button>
+                    {<Github className="mr-4 h-5 w-5 hover:bg-white/10" />}
+                </button>
+            </Link>
+
             <Link to="/">
                 <button>
                     {<House className="mr-4 h-5 w-5 hover:bg-white/10" />}
