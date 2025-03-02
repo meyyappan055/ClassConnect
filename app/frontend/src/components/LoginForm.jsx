@@ -161,12 +161,11 @@ export function LoginForm({ className, ...props }) {
         </div>
       )}
 
-    <div className="mt-1 flex items-center justify-center space-x-2">
+      <div className="mt-1 flex items-center justify-center space-x-2">
         <Lock className="h-4 w-4" />
         <p className="font-robotoCondensed text-slate-300 text-base font-medium" >We respect your privacy – no data stored.</p>
       </div>
-      <div>
-      </div>
+
     </div>
   );
 }
