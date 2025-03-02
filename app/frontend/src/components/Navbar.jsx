@@ -16,11 +16,12 @@ const Navbar = () => {
         </div>   
 
         <div className='mt-5 mr-1 '>
-            <Link to="https://github.com/meyyappan055/ClassConnect">
+            <a href="https://github.com/meyyappan055/ClassConnect">
                 <button>
                     {<Github className="mr-4 h-5 w-5 hover:bg-white/10" />}
                 </button>
-            </Link>
+            </a>
+            
 
             <Link to="/">
                 <button>

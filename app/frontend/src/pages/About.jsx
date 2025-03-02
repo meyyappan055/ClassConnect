@@ -12,7 +12,7 @@ const About = () => {
       <div className='font-inter font-semibold text-3xl text-center mt-20'>
         Why I Made ClassConnect?🧑‍💻
       </div>
-      <div className='font-inter font-normal text-lg mt-10 ml-8 mr-8 md:ml-20 md:mr-20 leading-relaxed'>
+      <div className='font-inter font-normal text-lg mt-10 ml-8 mr-8 md:mx-52 leading-relaxed'>
 
         Back in my first year, my daily routine included a not-so-fun ritual: manually scheduling all my classes in Google Calendar📆.
         I’d flip between pages in academia or stare at a timetable image, then painstakingly add them to my calendar. Every. Single. Day.⌛
@@ -20,16 +20,16 @@ const About = () => {
         <br /><br />
 
         It was boring, repetitive, and frustrating. I knew there had to be a smarter way.💡Around this time, I noticed my friends wishing for the same thing—a simpler, more efficient way to manage their schedules.  
-        I even came across a public group 👥where someone explained how they relied on their calendar and needed a tool to simplify class scheduling.🛠️
+        I even came across a public group 👥 where someone explained how they relied on their calendar and needed a tool to simplify class scheduling.🛠️
 
         <br /><br />
 
-        That’s when it clicked.⚡ If people, including me, needed this, why not create it? So I did. Welcome to ClassConnect. 🎉🚀
+        That’s when it clicked.⚡ If people, including me, needed this, why not create it? So I did. Welcome to ClassConnect. 🚀
 
         <br /><br />
 
         Just download it, click on the file, and tap "Add All" - and boom! 💥  
-              Your Weekly Timetable is ready 🎯📅 and your classes will instantly appear in your calendar.   
+              Your Weekly Timetable is ready and your classes will instantly appear in your calendar.   
               It’s that easy!✅ 
 
       </div>
