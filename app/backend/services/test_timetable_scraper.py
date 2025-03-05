@@ -28,8 +28,19 @@ def scrape_table_data(page):
         subject_title = column_data[2]
         subject_slot = column_data[8]
         room_no = column_data[9]
-        content = [subject_title, subject_slot, room_no]
-        data.append(content)
+
+        if "-" in subject_slot: 
+            slots = [slot for slot in subject_slot.strip("-").split("-") if slot]  
+            
+            if len(slots) == 2: 
+                p1, p2 = slots
+                data.append([subject_title, p1, room_no])
+                data.append([subject_title, p2, room_no])
+            else:
+                data.append([subject_title, slots[0], room_no])  
+
+        else:
+            data.append([subject_title, subject_slot, room_no]) 
 
     # print(data)
     return data
