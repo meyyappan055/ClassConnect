@@ -12,8 +12,8 @@ import logging
 
 
 def get_user_name(email):
-            email_parts = email.split("@")
-            return email_parts[0]
+    email_parts = email.split("@")
+    return email_parts[0]
 
 def format_date(day_number):
     current_year, current_month, _ = get_current_date()
