@@ -25,6 +25,7 @@ export function LoginForm({ className, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [progress, setProgress] = useState({ text: "", value: 0 });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   useEffect(() => {
     if (!isLoggedIn) {
@@ -38,6 +39,12 @@ export function LoginForm({ className, ...props }) {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setProgress({ text: "Logging in...", value: 20 });
+
     try {
       console.log("Starting login attempt...");
       const url = "https://classconnect-production.up.railway.app/api/login";
@@ -90,6 +97,10 @@ export function LoginForm({ className, ...props }) {
       }
       
       console.error("Login failed:", errorMessage);
+    } finally {
+      if (!isLoggedIn) {
+        setIsSubmitting(false);
+      }
     }
   };
 
