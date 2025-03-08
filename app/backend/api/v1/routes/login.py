@@ -19,6 +19,7 @@ class LoginData(BaseModel):
 
 limiter = Limiter(key_func=get_remote_address)
 
+
 @router.post("/login")
 @limiter.limit("3/minute") 
 async def login(
@@ -37,12 +38,28 @@ async def login(
         capture_output=True,
         text=True
     )
-
+    
+    print("STDOUT:", result.stdout)
+    print("STDERR:", result.stderr)
+    
     if "SUCCESS" in result.stdout:
         try:
-            json_data = json.loads(result.stdout.strip().split('\n')[1])
-            return JSONResponse(content={"status": "success", "message": "Login successful", "data": json_data})
-        except Exception:
-            raise HTTPException(status_code=500, detail="Failed to parse data")
+            output_lines = result.stdout.strip().split('\n')
+            success_index = -1
+            
+            for i, line in enumerate(output_lines):
+                if line.strip() == "SUCCESS":
+                    success_index = i
+                    break
+            
+            if success_index >= 0 and success_index + 1 < len(output_lines):
+                json_data = json.loads(output_lines[success_index + 1])
+                return JSONResponse(content={"status": "success", "message": "Login successful", "data": json_data})
+            else:
+                raise HTTPException(status_code=500, detail="Missing data after SUCCESS marker")
+        except json.JSONDecodeError as e:
+            raise HTTPException(status_code=500, detail=f"JSON parsing error: {str(e)}")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to parse data: {str(e)}")
 
     raise HTTPException(status_code=401, detail=result.stderr.strip() or result.stdout.strip() or "Login failed")

@@ -20,6 +20,7 @@ const MainPage = () => {
   return (
     
   <section>
+    
       <Dialog open={true}>
         <DialogContent className="max-w-md text-center">
           <DialogHeader>
