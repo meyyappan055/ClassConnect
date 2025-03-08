@@ -59,7 +59,7 @@ def perform_login(page, email, password):
         return False
 
 def login_and_scrape(playwright: Playwright, email: str, password: str):
-    browser = playwright.chromium.launch(headless=False, args=[
+    browser = playwright.chromium.launch(headless=True, args=[
             "--disable-blink-features=AutomationControlled",
             "--disable-gpu",
             "--disable-dev-shm-usage",  
