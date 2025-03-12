@@ -21,7 +21,7 @@ const MainPage = () => {
     
   <section>
     
-      <Dialog open={true}>
+      {/* <Dialog open={true}>
         <DialogContent className="max-w-md text-center">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">BRB, Fixing Things! 🛠️ </DialogTitle>
@@ -31,7 +31,7 @@ const MainPage = () => {
             Refresh Later
           </Button>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
 
         <div className='mt-28 flex font-inter font-bold text-3xl md:text-4-5xl justify-center items-center text-center'>
