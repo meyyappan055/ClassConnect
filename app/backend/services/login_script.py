@@ -201,10 +201,10 @@ def login_and_scrape(playwright: Playwright, email: str, password: str):
         page.locator('#portalLogout').click()
         page.wait_for_timeout(1000)
 
-        print("SUCCESS")
-        print(json.dumps(weekly_schedule))
-        return True
-
+        # print(json.dumps(weekly_schedule))
+        # return True
+        return weekly_schedule
+        
     except Exception as e:
         print(f"ERROR: {str(e)}")
         return False

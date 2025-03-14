@@ -25,13 +25,18 @@ def convert_to_utc(year, month, day, time):
 
 @router.post("/generate-ical")
 async def generate_ical(request:Request):
+    # print("Received request")
     body = await request.json()
     # print("Received data:", body)
     print("received data")
 
     try:
         classes = body.get("data")  
+        if not classes:
+            raise ValueError("No class data found in request")
+        print("Parsed classes:", classes)
     except Exception as e:
+        print("Error parsing request data:", str(e))
         raise HTTPException(status_code=422, detail="Invalid input format: " + str(e))
 
 
@@ -86,4 +91,5 @@ END:VEVENT
         )
     
     except Exception as e:
+        print("Error generating ICS file:", str(e))
         raise HTTPException(status_code=500, detail=str(e))
