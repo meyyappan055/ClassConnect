@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { Spinner } from '@/components/ui/spinner'
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -35,6 +36,7 @@ export function LoginForm({ className, ...props }) {
     setLoading(true);
     setError(null);
     setProgress({ text: "Logging in...", value: 20 });
+    
 
     try {
         const loginResponse = await axios.post("https://classconnect-production.up.railway.app/api/login", 
@@ -110,7 +112,7 @@ export function LoginForm({ className, ...props }) {
                             .from('tasks')
                             .delete()
                             .eq('task_id', task_id);
-                            
+
                     } catch (error) {
                         console.error("Generate iCal error:", error);
                         setError("Failed to generate calendar: " + (error.message || "Unknown error"));
@@ -204,8 +206,9 @@ export function LoginForm({ className, ...props }) {
 
       {progress.text && (
         <div className="w-full space-y-2">
-          <Progress value={progress.value} className="w-full" />
-          <div className="flex justify-center font-inter font-semibold">
+          <Progress value={progress.value} className="w-full mt-1" />
+          <div className="flex justify-center items-center gap-2 font-inter font-semibold">
+            {loading && <Spinner className="h-7 w-6" />}
             <div className="text-slate-300">{progress.text}</div>
           </div>
         </div>
@@ -213,12 +216,12 @@ export function LoginForm({ className, ...props }) {
 
       {error && (
         <div className="text-red-500 text-center font-medium">
-          {error}
+          Error : {error}
         </div>
       )}
 
       <div className="mt-1 flex items-center justify-center space-x-2">
-        <Lock className="h-4 w-4" />
+        <Lock className="h-5 w-6" />
         <p className="font-robotoCondensed text-slate-300 text-base font-medium">
           We respect your privacy – no data stored.
         </p>
