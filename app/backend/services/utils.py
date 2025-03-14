@@ -1,6 +1,6 @@
 from datetime import date
-from test_odd_calendar_scraper import june,july,august,september,october,november,december
-from test_even_calendar_scraper import january,february,march,april,may
+from services.test_odd_calendar_scraper import june,july,august,september,october,november,december
+from services.test_even_calendar_scraper import january,february,march,april,may
 
 def get_current_date():
     current_date = str(date.today()) # 2025-01-01
