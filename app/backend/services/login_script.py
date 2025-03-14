@@ -2,12 +2,16 @@ from playwright.sync_api import Playwright, sync_playwright
 import sys
 import json
 from bs4 import BeautifulSoup
-from test_odd_calendar_scraper import navigate_odd_calendar
-from test_even_calendar_scraper import navigate_even_calendar
-from test_timetable_scraper import navigate_to_timetable, scrape_table_data, get_batch_number
-from test_unified_timetable import navigate_batch1, navigate_batch2, scrape_batch1_data, scrape_batch2_data
+import os
+
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
+from services.test_odd_calendar_scraper import navigate_odd_calendar
+from services.test_even_calendar_scraper import navigate_even_calendar
+from services.test_timetable_scraper import navigate_to_timetable, scrape_table_data, get_batch_number
+from services.test_unified_timetable import navigate_batch1, navigate_batch2, scrape_batch1_data, scrape_batch2_data
 from datetime import date
-from utils import get_current_date, process_calendar_data
+from services.utils import get_current_date, process_calendar_data
 import logging
 
 
