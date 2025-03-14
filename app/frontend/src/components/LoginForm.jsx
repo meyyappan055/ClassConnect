@@ -105,6 +105,12 @@ export function LoginForm({ className, ...props }) {
                         const blob = new Blob([postResponse.data], { type: "text/calendar" });
                         const download_url = URL.createObjectURL(blob);
                         navigate("/download", { state: { fileUrl: download_url } });
+
+                        await supabase
+                            .from('tasks')
+                            .delete()
+                            .eq('task_id', task_id);
+                            
                     } catch (error) {
                         console.error("Generate iCal error:", error);
                         setError("Failed to generate calendar: " + (error.message || "Unknown error"));
@@ -133,7 +139,7 @@ export function LoginForm({ className, ...props }) {
     }
   };
 
-  
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
