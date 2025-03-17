@@ -21,25 +21,36 @@ limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("/login")
-@limiter.limit("3/minute") 
+@limiter.limit("3/minute")
 async def login(
     request: Request,
     login_data: LoginData,
     response: Response
 ):
-    print("Login request received for:", login_data.email) 
+    try:
+        print("Login request received for:", login_data.email) 
 
-    if not login_data.email.endswith("@srmist.edu.in"):
-        raise HTTPException(status_code=401, detail="Invalid email domain. Use your SRM email.")
+        if not login_data.email.endswith("@srmist.edu.in"):
+            raise HTTPException(status_code=401, detail="Invalid email domain. Use your SRM email.")
 
-    task_id = add_task(login_data.email, login_data.password)
-    print(f"Task ID generated: {task_id}") 
-    
-    return JSONResponse(content={
-        "status": "success", 
-        "message": "Login request received", 
-        "task_id": task_id
-    })
+        task_id = add_task(login_data.email, login_data.password)
+        print(f"Task ID generated: {task_id}") 
+        
+        return JSONResponse(
+            content={
+                "status": "success", 
+                "message": "Login request received", 
+                "task_id": task_id
+            },
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }
+        )
+    except Exception as e:
+        print(f"Login error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/status/{task_id}")
 async def get_status(task_id: str, response: Response, limiter: Limiter = Depends(get_limiter)):
