@@ -10,105 +10,142 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useState, useEffect } from "react";
+import { Spinner } from '@/components/ui/spinner'
+import { useState } from "react";
 import axios from "axios";
-import DownloadPage from "@/pages/DownloadPage";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock } from 'lucide-react';  
 
 
 export function LoginForm({ className, ...props }) {
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [fileUrl, setFileUrl] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [progress, setProgress] = useState({ text: "", value: 0 });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  useEffect(() => {
-    if (!isLoggedIn) {
-      setProgress({ text: "", value: 0 });
-    }
-  }, [isLoggedIn]);
+  const navigate = useNavigate();
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-  
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
 
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
+    setLoading(true);
+    setError(null);
     setProgress({ text: "Logging in...", value: 20 });
+    
 
     try {
-      console.log("Starting login attempt...");
-      const url = "https://classconnect-production.up.railway.app/api/login";
-      const formData = { email, password };
-      setProgress({ text: "Logging in and scraping...", value: 25 });
+        const loginResponse = await axios.post("https://classconnect-production.up.railway.app/api/login", 
+            { email, password },
+            {
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                withCredentials: true
+            }
+        );
 
-      const response = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true 
-      });
+        const task_id = loginResponse.data.task_id;
+        console.log("Task started:", task_id);
+        setProgress({ text: "Processing your request...", value: 40 });
 
-      setProgress({ text: "Login successful! Generating iCal file...", value: 50 });
-      setIsLoggedIn(true);
+        const channel = supabase
+          .channel(`task-${task_id}`)
+          .on('postgres_changes', {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'tasks',
+                filter: `task_id=eq.${task_id}`
+            }, async (payload) => {
+                console.log("Task update received:", payload.new.status);
+                
+                if (payload.new.status === 'completed') {
+                    setProgress({ text: "Generating calendar...", value: 80 });
 
-      const data = response.data;
-      if (data){
-        setProgress({ text: "Processing calendar data...", value: 75 });
-      }
-      const generateIcalUrl = "https://classconnect-production.up.railway.app/api/generate-ical";
+                    try {
+                        const { data, error } = await supabase
+                            .from('tasks')
+                            .select('result')
+                            .eq('task_id', task_id)
+                            .single();
+                        
+                        if (error) throw error;
+                        
+                        if (!data || !data.result) {
+                          console.error("No result found for task:", task_id);
+                          setError("No data available. Please try again.");
+                          return;
+                      }
+                        
+                        console.log("Retrieved data from Supabase:", data.result);
 
-      const postResponse = await axios.post(generateIcalUrl, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        responseType: "blob",
-      });
+                        const postResponse = await axios.post(
+                            "https://classconnect-production.up.railway.app/api/generate-ical",
+                            { data: data.result },
+                            {
+                                headers: { 
+                                    "Content-Type": "application/json",
+                                    "Accept": "application/json"
+                                },
+                                responseType: "blob"
+                            }
+                        );
+                        
+                        console.log("Calendar generation successful");
+                        
+                        // Mark data as retrieved
+                        await supabase
+                            .from('tasks')
+                            .update({ data_retrieved: true })
+                            .eq('task_id', task_id);
+                        
+                        const blob = new Blob([postResponse.data], { type: "text/calendar" });
+                        const download_url = URL.createObjectURL(blob);
+                        navigate("/download", { state: { fileUrl: download_url } });
 
-      setProgress({ text: "Calendar file ready!", value: 100 });
+                        await supabase
+                            .from('tasks')
+                            .delete()
+                            .eq('task_id', task_id);
 
-      const blob = new Blob([postResponse.data], { type: "text/calendar" });
-      const download_url = URL.createObjectURL(blob);
-      setFileUrl(download_url);
+                    } catch (error) {
+                        console.error("Generate iCal error:", error);
+                        setError("Failed to generate calendar: " + (error.message || "Unknown error"));
+                    } finally {
+                        channel.unsubscribe();
+                        setLoading(false);
+                    }
+                } else if (payload.new.status === 'failed') {
+                    setError(payload.new.error || "Task failed");
+                    channel.unsubscribe();
+                    setLoading(false);
+                }
+            });
 
-      setTimeout(() => {
-        navigate("/download", { state: { fileUrl: download_url } });
-      }, 500);
+        const { error: subError } = channel.subscribe();
+        if (subError) {
+            console.error("Subscription error:", subError);
+            setError("Failed to monitor task status");
+            setLoading(false);
+        }
 
     } catch (error) {
-      console.error("Full error object:", error);
-      setProgress({ text: "Error occurred during login", value: 0 });
-      
-      let errorMessage = "An error occurred during login";
-      if (error.response) {
-        errorMessage = error.response.data.detail || error.response.data;
-        console.error("Server error response:", error.response.data);
-      } else if (error.request) {
-        errorMessage = "No response received from server";
-      }
-      
-      console.error("Login failed:", errorMessage);
-    } finally {
-      if (!isLoggedIn) {
-        setIsSubmitting(false);
-      }
+        console.error("Login error:", error);
+        setError(error.response?.data?.detail || "Login failed");
+        setLoading(false);
     }
   };
+
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl pb-1 font-inter font-semibold ">Login</CardTitle>
+          <CardTitle className="text-3xl pb-1 font-inter font-semibold">Login</CardTitle>
           <CardDescription className="font-semibold">
             Enter your SRM Academia's Mail ID and Password.
           </CardDescription>
@@ -123,39 +160,44 @@ export function LoginForm({ className, ...props }) {
                   type="email"
                   placeholder="xyz@srmist.edu.in"
                   value={email}
-                  onChange={(e)=> setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password </Label>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="pass*ord"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="pr-10" 
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
-              </Button>
-                </div>
-                  </div>
-                  <Button type="submit" variant="outline" className="w-full font-medium text-base">
-                    Login
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="pass*ord"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    <span className="sr-only">
+                      {showPassword ? "Hide password" : "Show password"}
+                    </span>
                   </Button>
+                </div>
+              </div>
+              <Button 
+                type="submit" 
+                variant="outline" 
+                className="w-full font-medium text-base"
+                disabled={loading}
+              >
+                {loading ? "Processing..." : "Login"}
+              </Button>
             </div>
           </form>
         </CardContent>
@@ -163,20 +205,26 @@ export function LoginForm({ className, ...props }) {
 
       {progress.text && (
         <div className="w-full space-y-2">
-          <Progress value={progress.value} className="w-full" />
-          <div className="flex justify-center font-inter font-semibold">
-            <div className="text-slate-300">
-              {progress.text}
-            </div>
+          <Progress value={progress.value} className="w-full mt-1" />
+          <div className="flex justify-center items-center gap-2 font-inter font-semibold">
+            {loading && <Spinner className="h-7 w-6" />}
+            <div className="text-slate-300">{progress.text}</div>
           </div>
         </div>
       )}
 
-      <div className="mt-1 flex items-center justify-center space-x-2">
-        <Lock className="h-4 w-4" />
-        <p className="font-robotoCondensed text-slate-300 text-base font-medium" >We respect your privacy – no data stored.</p>
-      </div>
+      {error && (
+        <div className="text-red-500 text-center font-medium">
+          Error : {error}
+        </div>
+      )}
 
+      <div className="mt-1 flex items-center justify-center space-x-2">
+        <Lock className="h-5 w-6" />
+        <p className="font-robotoCondensed text-slate-300 text-base font-medium">
+          We respect your privacy – no data stored.
+        </p>
+      </div>
     </div>
   );
 }
