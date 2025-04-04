@@ -1,4 +1,5 @@
 from redis_config import redis_conn
+from rq import Queue
 
 RESULT_TTL = 86400
 
@@ -33,3 +34,7 @@ def get_task_status(task_id):
         return {"status": "not_found", "message": "Task not found"}
     
     return status_data 
+
+
+default_queue = Queue('default', connection=redis_conn)
+high_queue = Queue('high', connection=redis_conn)
